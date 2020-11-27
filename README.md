@@ -1,2 +1,1 @@
-# AOC20
-Advent of Code 2020 in Haskell
+This repository contains Haskell programs to solve 2020's Advent of Code.

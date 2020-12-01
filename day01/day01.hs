@@ -1,22 +1,25 @@
-findMatch :: Integer -> [Integer] -> Maybe Integer
-findMatch _ [] = Nothing
-findMatch x (y:ys) =
-    if x + y == 2020
-        then Just y
-        else findMatch x ys
+import Data.List (sort)
 
-findEntries :: [Integer] -> Maybe (Integer, Integer)
-findEntries [] = Nothing
-findEntries (x:xs) =
-    case findMatch x xs of
-        Just y  -> Just (x, y)
-        Nothing -> findEntries xs
+findPair :: Integer -> Int -> Int -> [Integer] -> Maybe (Integer, Integer)
+findPair _ _ _ [] = Nothing
+findPair sum l r list
+        | l >= r = Nothing
+        | curSum > sum  = findPair sum l (r - 1) list
+        | curSum < sum  = findPair sum (l + 1) r list
+        | curSum == sum = Just (left, right)
+    where
+        left  = list !! l
+        right = list !! r
+        curSum = left + right 
 
 main :: IO()
 main = do
     contents <- getContents
-    let expenses = map read . lines $ contents
+    let expenses = sort . map read . lines $ contents
+    let size = length expenses
 
-    case findEntries expenses of
+    print size
+
+    case findPair 2020 0 (size - 1) expenses of
         Just (x,y) -> putStrLn $ "Result: " ++ show (x * y)
         Nothing   -> putStrLn "No entries sum to 2020"

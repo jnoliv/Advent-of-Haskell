@@ -4,9 +4,11 @@ type PasswordData = ((Int, Int), Char, String)
 
 -- | Boolean exclusive OR
 xor :: Bool -> Bool -> Bool
-True `xor` False  = True
-False `xor` True  = True
-_ `xor` _ = False
+xor = (/=)
+
+-- | Count occurences in the given list that satisfy 'cond'
+count :: (a -> Bool) -> [a] -> Int
+count cond = length . filter cond
 
 parseInput1 :: [String] -> PasswordData
 parseInput1 input = ((l,r), c, pass)
@@ -16,10 +18,6 @@ parseInput1 input = ((l,r), c, pass)
         c = head $ input !! 2
         pass = input !! 4
 
-isValid1 :: PasswordData -> Bool
-isValid1 ((l,r), c, pass) = l <= count && count <= r
-    where count = length . filter (c==) $ pass
-
 parseInput2 :: [String] -> PasswordData
 parseInput2 input = ((p1,p2), c, pass)
     where
@@ -28,15 +26,17 @@ parseInput2 input = ((p1,p2), c, pass)
         c = head $ input !! 2
         pass = input !! 4
 
+-- | Check if 'pass' has a count of characters 'c' between 'l' and 'r' 
+isValid1 :: PasswordData -> Bool
+isValid1 ((l,r), c, pass) = l <= cnt && cnt <= r
+    where cnt = count (c==) pass
+
+-- | Check if 'pass' has character 'c' at position 'p1' xor 'p2'
 isValid2 :: PasswordData -> Bool
 isValid2 ((p1,p2), c, pass) = (c1 == c) `xor` (c2 == c)
     where
-        size = length pass
-        c1 = if 0 <= p1 && p1 < size then pass !! p1 else ' '
-        c2 = if 0 <= p2 && p2 < size then pass !! p2 else ' '
-
-countValid :: (PasswordData -> Bool) -> [PasswordData] -> Int
-countValid isValid = length . filter isValid
+        c1 = pass !! p1
+        c2 = pass !! p2
 
 main :: IO()
 main = do
@@ -44,5 +44,5 @@ main = do
     let input1 = map (parseInput1 . splitOneOf " -:") . lines $ contents
     let input2 = map (parseInput2 . splitOneOf " -:") . lines $ contents
 
-    putStrLn $ "Valid passwords with policy 1: " ++ (show . countValid isValid1 $ input1)
-    putStrLn $ "Valid passwords with policy 2: " ++ (show . countValid isValid2 $ input2)
+    putStrLn $ "Valid passwords with policy 1: " ++ (show . count isValid1 $ input1)
+    putStrLn $ "Valid passwords with policy 2: " ++ (show . count isValid2 $ input2)

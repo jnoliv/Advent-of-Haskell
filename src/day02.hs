@@ -1,3 +1,5 @@
+import qualified Common.AdventAPI as AdventAPI
+
 import Data.List.Split (splitOneOf)
 
 type PasswordData = ((Int, Int), Char, String)
@@ -40,7 +42,7 @@ isValid2 ((p1,p2), c, pass) = (c1 == c) `xor` (c2 == c)
 
 main :: IO()
 main = do
-    contents <- getContents
+    contents <- AdventAPI.readInput 2 "../session-cookie.txt" "../input"
     let input1 = map (parseInput1 . splitOneOf " -:") . lines $ contents
     let input2 = map (parseInput2 . splitOneOf " -:") . lines $ contents
 

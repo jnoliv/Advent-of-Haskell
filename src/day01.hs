@@ -1,3 +1,5 @@
+import qualified Common.AdventAPI as AdventAPI
+
 import Data.List (sort)
 
 -- | Finds a pair in the given list that sums to the given number.
@@ -33,7 +35,7 @@ findTriplet sum (x:xs) =
 
 main :: IO()
 main = do
-    contents <- getContents
+    contents <- AdventAPI.readInput 1 "../session-cookie.txt" "../input"
     let expenses = sort . map read . lines $ contents
     let size = length expenses
 

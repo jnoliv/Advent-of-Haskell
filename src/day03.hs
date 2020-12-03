@@ -3,41 +3,49 @@ import qualified Common.AdventAPI as AdventAPI
 import Control.Monad (forM_)
 import qualified Data.Set as Set
 
-type AreaMap = Set.Set (Int,Int)
-type BoundedAreaMap = (Int,Int,AreaMap)
+type AreaMap = Set.Set (Int,Int)        -- set of all tree positions
+type BoundedAreaMap = (Int,Int,AreaMap) -- (#rows, #cols, _)
+
+-- | Prepend a value to a 2-tuple to form a 3-tuple
+prependT :: a -> (b,c) -> (a,b,c)
+prependT x (y,z) = (x,y,z)
+
+-- | Remove the last element of a 3-tuple
+truncateT :: (a,b,c) -> (a,b)
+truncateT (a,b,_) = (a,b)
+
+-- | Get the third element of a 3-tuple
+thrd :: (a,b,c) -> c
+thrd (_,_,c) = c
 
 -- | Check if the given coordinates are a tree in the given area map
 hasTree :: BoundedAreaMap -> (Int,Int) -> Bool
-hasTree (_, nCols, areaMap) (x,y) =
-    let newY = y `mod` nCols
-    in Set.member (x,newY) areaMap 
-
--- | Fold a zipped input row into an area map
-foldRow :: (Int, [(Int, Char)]) -> AreaMap
-foldRow (rowNumber, row) = foldr foldFunc Set.empty row
-    where foldFunc (col, c) set = if c == '#' then Set.insert (rowNumber, col) set else set
+hasTree (_, nCols, areaMap) (x,y) = Set.member (x,newY) areaMap
+    where newY = y `mod` nCols 
 
 -- | Parse the input into a set of all positions with trees
 parseInput :: String -> BoundedAreaMap
-parseInput input = 
-    let zipped = zip [0..] . map (zip [0..]) $ lines input
-        areaMap = foldr (Set.union . foldRow) Set.empty zipped
-    in (length zipped, length . snd . head $ zipped, areaMap)
+parseInput input = (length rawRows, length . head $ rawRows, areaMap)
+    where rawRows = lines input
+          rows    = map (zip [0..]) rawRows 
+          all     = concat $ zipWith (map . prependT) [0..] rows
+          trees   = map truncateT . filter ((=='#') . thrd) $ all
+          areaMap = Set.fromList trees
 
 -- | Count all the trees hit by following the given slope
 countTrees :: BoundedAreaMap -> (Int, Int) -> Int
 countTrees bAreaMap@(nRows,_,_) (hStep, vStep) =
     let positions = zip [0,vStep..nRows] [0,hStep..]
-    in foldr (\pos cnt -> if hasTree bAreaMap pos then cnt + 1 else cnt) 0 positions
+    in length . filter (hasTree bAreaMap) $ positions
 
 main :: IO()
 main = do
     contents <- AdventAPI.readInput 3 "../session-cookie.txt" "../input"
 
-    let bAreaMap@(nRows,nCols,areaMap) = parseInput contents
-    print $ countTrees bAreaMap (3,1)
-
     let slopes = [(1,1), (3,1), (5,1), (7,1), (1,2)]
+
+    let bAreaMap = parseInput contents        
         trees = map (countTrees bAreaMap) slopes
     
+    print $ trees !! 1
     print $ product trees

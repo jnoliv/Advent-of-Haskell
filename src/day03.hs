@@ -36,3 +36,8 @@ main = do
 
     let bAreaMap@(nRows,nCols,areaMap) = parseInput contents
     print $ countTrees bAreaMap (3,1)
+
+    let slopes = [(1,1), (3,1), (5,1), (7,1), (1,2)]
+        trees = map (countTrees bAreaMap) slopes
+    
+    print $ product trees

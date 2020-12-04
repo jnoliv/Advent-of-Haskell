@@ -1,5 +1,6 @@
 import qualified Common.AdventAPI as AdventAPI
 
+import Data.Char (isDigit, isAlphaNum)
 import Data.List.Split (splitOn, splitOneOf)
 
 data Passport = Passport { byr :: Int       -- Birth Year
@@ -29,23 +30,57 @@ addField p (field, value) = case field of
     _     -> p  -- just ignore unknown fields
 
 -- | Check if all required fields are present
+isFilled :: Passport -> Bool
+isFilled p =
+    let isPresent f = f p /= f defaultPassport
+    in
+        isPresent byr &&
+        isPresent iyr &&
+        isPresent eyr &&
+        isPresent hgt &&
+        isPresent hcl &&
+        isPresent ecl &&
+        isPresent pid
+
+-- | Check if all required fields are present and valid
 isValid :: Passport -> Bool
-isValid p =
-    byr p /= -1 &&
-    iyr p /= -1 &&
-    eyr p /= -1 &&
-    not (null (hgt p)) &&
-    not (null (ecl p)) &&
-    not (null (hcl p)) &&
-    not (null (pid p))
+isValid Passport{byr=byr, iyr=iyr, eyr=eyr, hgt=hgt, hcl=hcl, ecl=ecl, pid=pid} =
+    (1920 <= byr && byr <= 2002) &&
+    (2010 <= iyr && iyr <= 2020) &&
+    (2020 <= eyr && eyr <= 2030) &&
+    isValidHeight hgt &&
+    isValidHairColor hcl &&
+    isValidEyeColor ecl &&
+    isValidPassportID pid
+
+isValidHeight :: String -> Bool
+isValidHeight str =
+    let num  = read $ takeWhile isDigit str
+        unit = dropWhile isDigit str
+    in case unit of
+        "cm" -> 150 <= num && num <= 193
+        "in" -> 59 <= num && num <= 76
+        _    -> False
+
+isValidHairColor :: String -> Bool
+isValidHairColor ('#':as) = length as == 6 && all isAlphaNum as
+isValidHairColor _ = False
+
+isValidEyeColor :: String -> Bool
+isValidEyeColor = flip elem ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+
+isValidPassportID :: String -> Bool
+isValidPassportID str = length str == 9 && all isDigit str
 
 -- | Count occurences in the given list that satisfy 'cond'
 count :: (a -> Bool) -> [a] -> Int
 count cond = length . filter cond
 
+-- | Parse the input into a list of Passport records
 parseInput :: String -> [Passport]
 parseInput = map (parsePassport . splitOneOf " \n") . splitOn "\n\n"
 
+-- | Parse a list of fields into a Passport record
 parsePassport :: [String] -> Passport
 parsePassport = foldr (foldFunc . splitOn ":") defaultPassport
     where foldFunc [field,value] p = addField p (field,value)
@@ -55,4 +90,7 @@ main :: IO()
 main = do
     contents <- AdventAPI.readInput 4 "../session-cookie.txt" "../input"
 
-    print . count isValid $ parseInput contents
+    let passports = parseInput contents
+
+    print . count isFilled $ passports
+    print . count isValid  $ passports

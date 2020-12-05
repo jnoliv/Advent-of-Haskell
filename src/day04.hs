@@ -1,7 +1,7 @@
 import qualified Common.AdventAPI as AdventAPI
 
-import Data.Char (isDigit, isAlphaNum)
-import Data.List.Split (splitOn, splitOneOf)
+import Data.Char (isDigit)
+import Data.List.Split (splitOn)
 
 data Passport = Passport { byr :: Int       -- Birth Year
                          , iyr :: Int       -- Issue Year
@@ -31,16 +31,8 @@ addField p (field, value) = case field of
 
 -- | Check if all required fields are present
 isFilled :: Passport -> Bool
-isFilled p =
-    let isPresent f = f p /= f defaultPassport
-    in
-        isPresent byr &&
-        isPresent iyr &&
-        isPresent eyr &&
-        isPresent hgt &&
-        isPresent hcl &&
-        isPresent ecl &&
-        isPresent pid
+isFilled p = all isPresent [byr, iyr, eyr] && all isPresent [hgt, hcl, ecl, pid]
+    where isPresent f = f p /= f defaultPassport
 
 -- | Check if all required fields are present and valid
 isValid :: Passport -> Bool
@@ -63,7 +55,7 @@ isValidHeight str =
         _    -> False
 
 isValidHairColor :: String -> Bool
-isValidHairColor ('#':as) = length as == 6 && all isAlphaNum as
+isValidHairColor ('#':as) = length as == 6 && all isHex as
 isValidHairColor _ = False
 
 isValidEyeColor :: String -> Bool
@@ -76,9 +68,13 @@ isValidPassportID str = length str == 9 && all isDigit str
 count :: (a -> Bool) -> [a] -> Int
 count cond = length . filter cond
 
+-- | Check if character is hexadecimal digit
+isHex :: Char -> Bool
+isHex = flip elem (['0'..'9'] ++ ['a'..'z'] ++ ['A'..'Z'])
+
 -- | Parse the input into a list of Passport records
 parseInput :: String -> [Passport]
-parseInput = map (parsePassport . splitOneOf " \n") . splitOn "\n\n"
+parseInput = map (parsePassport . words) . splitOn "\n\n"
 
 -- | Parse a list of fields into a Passport record
 parsePassport :: [String] -> Passport

@@ -1,6 +1,5 @@
 import qualified Common.AdventAPI as AdventAPI
 
-import Control.Monad (forM_)
 import qualified Data.Set as Set
 
 type AreaMap = Set.Set (Int,Int)        -- set of all tree positions

@@ -1,22 +1,19 @@
 import qualified Common.AdventAPI as AdventAPI
 
 import qualified Data.Set as Set
-import Data.List (intersect)
 import Data.List.Split (splitOn)
 
-type AnswerGroup = Set.Set Char
+type AG = Set.Set Char  -- answer group
 
-parseAnswers1 :: [String] -> [AnswerGroup]
-parseAnswers1 = map (Set.fromList . filter (/='\n'))
-
-parseAnswers2 :: [String] -> [String]
-parseAnswers2 = map (foldr1 intersect . lines)
+-- | Fold each group using 'f' with 'zero' as the base case and
+-- return the sum of the sizes of each folded group
+solve :: [[String]] -> (AG -> AG -> AG, AG) -> Int
+solve answers (f, zero) = sum . map (Set.size . foldr foldFunc zero) $ answers
+    where foldFunc x set = f set $ Set.fromList x
 
 main :: IO()
 main = do
     contents <- AdventAPI.readInput 6 "../session-cookie.txt" "../input"
 
-    let groups = splitOn "\n\n" contents
-
-    print . sum . map Set.size . parseAnswers1 $ groups
-    print . sum . map length . parseAnswers2 $ groups
+    let groups = map words . splitOn "\n\n" $ contents
+    mapM_ (print . solve groups) [(Set.union, Set.empty), (Set.intersection, Set.fromList ['a'..'z'])]

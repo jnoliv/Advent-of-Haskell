@@ -5,7 +5,7 @@ import Data.List.Split (chunksOf)
 import qualified Data.Map as Map
 import qualified Data.IntSet as Set
 
-type AdjList  = [[Int]]
+type AdjList  = [[(Int, Int)]]  -- (node, edge weight)
 type ColorMap = Map.Map String Int
 
 -- | Parse the human readable adjacency list into a more
@@ -18,11 +18,12 @@ parseInput input = ( colorMap, parseInput' splitInput colorMap)
 -- | Recursively build the list by converting each line to a list
 -- of neighbours (using their integer ID). This creates the adjacency
 -- list because 'makeColorMap' assigns IDs to colors in the order they
--- have their neighbours presented
+-- have their neighbours presented. Example input line:
+-- "dim tan bags contain 3 shiny teal bags, 5 bright white bags, 4 striped bronze bags."
 parseInput' :: [[String]] -> ColorMap -> AdjList
-parseInput' (n:ns) colorMap = (if n !! 4 /= "no" then neighboursInt else []) : parseInput' ns colorMap
-    where neighbours    = map (concat . take 2 . tail) . chunksOf 4 . drop 4 $ n
-          neighboursInt = map (fromJust . flip Map.lookup colorMap) neighbours
+parseInput' (n:ns) colorMap = (if n !! 4 /= "no" then neighbours else []) : parseInput' ns colorMap
+    where toWeightedNeigh (w:c1:c2:_) = (fromJust $ Map.lookup (c1 ++ c2) colorMap, read w)
+          neighbours      = map toWeightedNeigh . chunksOf 4 . drop 4 $ n
 parseInput' [] _ = [] 
 
 -- | Make a map from all colors to their corresponding integer ID
@@ -35,15 +36,27 @@ makeColorMap = foldl f Map.empty
 reachable :: AdjList -> Set.IntSet -> [Int] -> Set.IntSet
 reachable adj visited (n:ns) = reachable adj visited' ns'
     where visited' = Set.insert n visited
-          ns'      = ns ++ filter (`Set.notMember` visited) (adj !! n)
+          ns'      = ns ++ filter (`Set.notMember` visited) (map fst $ adj !! n)
 reachable _ visited [] = visited
+
+-- | Calculate the weight of all paths starting from 'current'. For
+-- the problem in question, each node weighs 1
+weightAllPaths :: AdjList -> Int -> Int
+weightAllPaths adj current = 1 + sum (map edgeWeight $ adj !! current)
+    where edgeWeight (n,w) = w * weightAllPaths adj n
 
 main :: IO()
 main = do
     contents <- AdventAPI.readInput 7 "../session-cookie.txt" "../input"
 
     let (colorMap, adj) = parseInput contents
-        reachableFrom   = map (reachable adj Set.empty . (: [])) [0 .. length adj - 1]
-        canReach        = map (Set.member . fromJust . Map.lookup "shinygold" $ colorMap) reachableFrom
+        reachableFrom   = map (reachable adj Set.empty . map fst) adj
+        shinygoldID     = fromJust $ Map.lookup "shinygold" colorMap
+        canReach        = map (Set.member shinygoldID) reachableFrom
 
-    print . pred . length . filter id $ canReach
+    print . length . filter id $ canReach
+
+    -- This prints False, there are no loops. Phewww...
+    -- print . or $ zipWith Set.member [0..] reachableFrom
+
+    print . pred $ weightAllPaths adj shinygoldID

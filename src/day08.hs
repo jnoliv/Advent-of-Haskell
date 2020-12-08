@@ -40,7 +40,7 @@ tryRestoreRun program adr
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 8 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 8
 
     let program = Vector.fromList . map parseOp $ lines contents
         result1 = executeUntilLoop program Set.empty 0 0

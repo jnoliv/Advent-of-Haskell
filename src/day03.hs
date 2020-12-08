@@ -39,7 +39,7 @@ countTrees bAreaMap@(nRows,_,_) (hStep, vStep) =
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 3 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 3
 
     let slopes = [(1,1), (3,1), (5,1), (7,1), (1,2)]
 

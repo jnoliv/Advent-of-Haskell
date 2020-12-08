@@ -13,7 +13,7 @@ solve answers (f, zero) = sum . map (Set.size . foldr foldFunc zero) $ answers
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 6 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 6
 
     let groups = map words . splitOn "\n\n" $ contents
     mapM_ (print . solve groups) [(Set.union, Set.empty), (Set.intersection, Set.fromList ['a'..'z'])]

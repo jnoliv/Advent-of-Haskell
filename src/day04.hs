@@ -84,7 +84,7 @@ parsePassport = foldr (foldFunc . splitOn ":") defaultPassport
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 4 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 4
 
     let passports = parseInput contents
 

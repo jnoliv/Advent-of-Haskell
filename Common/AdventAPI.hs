@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Common.AdventAPI (readInput) where
+module Common.AdventAPI (readInput, readInputDefaults) where
 
 import Network.HTTP.Req
 import System.Directory (doesFileExist)
@@ -8,6 +8,10 @@ import System.FilePath.Posix ((</>), (<.>))
 
 import qualified Data.Text as Text (pack)
 import qualified Data.ByteString.Char8 as ByteString (ByteString, pack, unpack)
+
+-- | Call 'readInput' with default paths
+readInputDefaults :: Int -> IO String
+readInputDefaults day = readInput day "../session-cookie.txt" "../input"
 
 -- | Read the input for the given day. If a file "input<day>.txt" exists
 -- in 'inputsDir', it is simply read. Otherwise, uses 'sessionCookiePath'

@@ -35,7 +35,7 @@ findTriplet sum (x:xs) =
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 1 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 1
     let expenses = sort . map read . lines $ contents
     let size = length expenses
 

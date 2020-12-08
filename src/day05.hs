@@ -19,7 +19,7 @@ findSeat _ = error "No free seat exists"
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInput 5 "../session-cookie.txt" "../input"
+    contents <- AdventAPI.readInputDefaults 5
 
     let seats = sort . map (binToDec . map bspToBit) . lines $ contents
 

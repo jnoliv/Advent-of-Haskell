@@ -1,5 +1,6 @@
 module Common.Utils (
     count, xor,
+    sinsert, findSumPair,
     Parser, readParsedLines
     ) where
 
@@ -17,6 +18,33 @@ count cond = length . filter cond
 -- | Boolean exclusive OR
 xor :: Bool -> Bool -> Bool
 xor = (/=)
+
+-- | Sorted list insertion
+sinsert :: Ord a => a -> [a] -> [a]
+sinsert x [] = [x]
+sinsert x (y:ys)
+    | x >  y = y : sinsert x ys 
+    | x <= y = x : y : ys 
+
+-- | Finds a pair in the given list that sums to the given number.
+-- Uses the two pointer technique to do so, which is probably not the
+-- most efficient way to do this in Haskell. This assumes a sorted input
+-- list! Check the algorithm here:
+-- https://www.geeksforgeeks.org/two-pointers-technique/
+findSumPair :: Integer -> [Integer] -> Maybe (Integer, Integer)
+findSumPair sum list = findSumPair' sum 0 (length list - 1) list
+
+findSumPair' :: Integer -> Int -> Int -> [Integer] -> Maybe (Integer, Integer)
+findSumPair' _ _ _ [] = Nothing
+findSumPair' sum l r list
+    | l >= r = Nothing
+    | curSum > sum  = findSumPair' sum l (r - 1) list
+    | curSum < sum  = findSumPair' sum (l + 1) r list
+    | curSum == sum = Just (left, right)
+    where
+        left  = list !! l
+        right = list !! r
+        curSum = left + right
 
 
 ---- Parsing abstractions

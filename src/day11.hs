@@ -1,7 +1,7 @@
 import qualified Common.AdventAPI as AdventAPI
 
 import Common.Utils (count)
-import Data.Maybe (catMaybes)
+import Data.Maybe (catMaybes, mapMaybe)
 import qualified Data.Map as M
 
 data Seat = Taken | Empty | Floor
@@ -28,7 +28,7 @@ charToSeat  _ = Nothing
 -- | Print a map, used for debugging
 showMap :: SeatMap -> Int -> String
 showMap m size = (++ "\n") . concatMap ((++ "\n") . map (seatToChar . flip (M.findWithDefault Floor) m)) $ inds
-    where inds = map (`zip` [0..size]) . fmap (cycle . return) $ [0..size]
+    where inds = map (`zip` [0..size -1]) . fmap (cycle . return) $ [0..size -1]
           seatToChar Taken = '#'
           seatToChar Empty = 'L'
           seatToChar Floor = '.'
@@ -38,25 +38,53 @@ stabilize :: (SeatMap -> Bool -> (Int, Int) -> Seat -> (Bool, Seat)) -> SeatMap 
 stabilize rules seats = snd $ until (not . fst) stabilize' (True, seats)
     where stabilize' (_,seats') = M.mapAccumWithKey (rules seats') False seats'
 
--- Apply the celular automaton rules to the given position
-applyRules :: SeatMap -> Bool -> (Int, Int) -> Seat -> (Bool, Seat)
-applyRules seats acc pos s =
-    let nAdj = countAdj seats pos
+-- Apply the part 1 celular automaton rules to the given position
+applyRules1 :: SeatMap -> Bool -> (Int, Int) -> Seat -> (Bool, Seat)
+applyRules1 seats acc pos s =
+    let nAdj = countAdj1 seats pos
     in case s of
         Taken -> if nAdj >= 4 then (True, Empty) else (acc, s)
         Empty -> if nAdj == 0 then (True, Taken) else (acc, s)
 
--- | Count the number of taken adjacent seats
-countAdj :: SeatMap -> (Int, Int) -> Int
-countAdj seats (x,y) = count id . map ((==Taken) . flip (M.findWithDefault Empty) seats) $ allAdj
-    where allAdj     = map (\(x',y') -> (x+x', y+y')) [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+-- | Count the number of taken adjacent seats (for part 1)
+countAdj1 :: SeatMap -> (Int, Int) -> Int
+countAdj1 seats (x,y) = count id . map ((==Taken) . flip (M.findWithDefault Empty) seats) $ allAdj
+    where allAdj = map (\(x',y') -> (x+x', y+y')) [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+
+-- Apply the part 2 celular automaton rules to the given position
+applyRules2 :: (Int, Int) -> SeatMap -> Bool -> (Int, Int) -> Seat -> (Bool, Seat)
+applyRules2 size seats acc pos s =
+    let nAdj = countAdj2 seats size pos
+    in case s of
+        Taken -> if nAdj >= 5 then (True, Empty) else (acc, s)
+        Empty -> if nAdj == 0 then (True, Taken) else (acc, s)
+
+-- | Count the number of taken adjacent seats (for part 2)
+countAdj2 :: SeatMap -> (Int,Int) -> (Int, Int) -> Int
+countAdj2 seats size (x,y) = count id . map ((==Taken) . flip (M.findWithDefault Empty) seats) $ allAdj
+    where allAdj = mapMaybe (findClosestSeat seats size (x,y)) [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+
+findClosestSeat :: SeatMap -> (Int,Int) -> (Int,Int) -> (Int,Int) -> Maybe (Int,Int)
+findClosestSeat seats size@(xSize,ySize) (x,y) d@(dx,dy)
+    | x < 0 || xSize <= x                       = Nothing
+    | y < 0 || ySize <= y                       = Nothing
+    | M.findWithDefault Floor p seats /= Floor = Just p
+    | otherwise                                = findClosestSeat seats size p d
+    where p = (x + dx, y + dy)
+
+-- | Count the number of taken seats
+countTaken :: SeatMap -> Int
+countTaken = M.foldr (\s a -> if s == Taken then a+1 else a) 0
 
 main :: IO()
 main = do
     contents <- AdventAPI.readInputDefaults 11
 
-    let seats  = readAsMap charToSeat contents
-        stable = stabilize applyRules seats
-        nTaken = M.foldr (\s a -> if s == Taken then a+1 else a) 0 stable :: Int
+    let size  = (,) <$> length <*> length . head $ lines contents
+        seats = readAsMap charToSeat contents
 
-    print nTaken
+        stable1 = stabilize  applyRules1       seats
+        stable2 = stabilize (applyRules2 size) seats
+
+    print $ countTaken stable1
+    print $ countTaken stable2

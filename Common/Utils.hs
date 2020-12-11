@@ -1,12 +1,15 @@
 module Common.Utils (
     count, xor,
     sinsert, findSumPair,
-    Parser, readParsedLines
+    Parser, readParsedLines,
+    readAsMap
     ) where
 
 import Common.AdventAPI (readInputDefaults)
 
 import Data.Void (Void)
+import Data.Maybe (catMaybes)
+import qualified Data.Map as Map
 import Text.Megaparsec (Parsec, parse, eof, endBy)
 import Text.Megaparsec.Char (char)
 import Text.Megaparsec.Error (errorBundlePretty)
@@ -62,3 +65,13 @@ readParsedLines day parser = do
     case parse parserFull "" input of
         Left e  -> fail $ "\n" ++ errorBundlePretty e
         Right r -> return r
+
+-- | Read the ASCII input to a map. Receives a function to convert
+-- from char to the map value, wrapped in Maybe to allow ommiting
+-- positions from the resulting map
+readAsMap :: (Char -> Maybe a) -> String -> Map.Map (Int, Int) a
+readAsMap f input = Map.fromList . catMaybes . concatMap (map maybeT) $ zipWith zip inds ls
+    where ls    = map (map f) . lines $ input
+          inds  = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
+          maybeT (x, Just y)  = Just (x,y)
+          maybeT (_, Nothing) = Nothing

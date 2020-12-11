@@ -1,5 +1,4 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import Data.Char (isDigit)
 import Data.List.Split (splitOn)
 

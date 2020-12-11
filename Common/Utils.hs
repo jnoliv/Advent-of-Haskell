@@ -1,11 +1,11 @@
-module Common.Utils (
+module Utils (
     count, xor,
     sinsert, findSumPair,
     Parser, readParsedLines,
     readAsMap
     ) where
 
-import Common.AdventAPI (readInputDefaults)
+import AdventAPI (readInputDefaults)
 
 import Data.Void (Void)
 import Data.Maybe (catMaybes)

@@ -1,5 +1,4 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import Data.List (sort)
 
 -- | Parse a character of the binary space partioning into a bit

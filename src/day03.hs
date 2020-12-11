@@ -1,5 +1,4 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import qualified Data.Set as Set
 
 type AreaMap = Set.Set (Int,Int)        -- set of all tree positions

@@ -1,7 +1,6 @@
-import qualified Common.AdventAPI as AdventAPI
-
-import Common.Utils (readAsMap, count)
+import AdventAPI
 import Data.Maybe (mapMaybe)
+import Utils (readAsMap, count)
 import qualified Data.Map as M
 
 data Seat = Taken | Empty | Floor

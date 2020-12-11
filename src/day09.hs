@@ -1,7 +1,6 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import Data.List (sort, delete)
-import Common.Utils (sinsert, findSumPair)
+import Utils (sinsert, findSumPair)
 import qualified Data.Vector as V
 
 type XMAS = V.Vector Integer

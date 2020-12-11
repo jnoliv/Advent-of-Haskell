@@ -1,5 +1,4 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import Data.Maybe (maybe)
 import qualified Data.IntSet    as Set
 import qualified Data.Vector as Vector

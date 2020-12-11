@@ -1,7 +1,6 @@
-import qualified Common.AdventAPI as AdventAPI
-
+import AdventAPI
 import Data.List (sort)
-import Common.Utils (findSumPair)
+import Utils (findSumPair)
 
 -- | Finds a triplet in the given list that sums to the given number.
 -- Fixes a number and then uses the two pointer technique to see if any pair
@@ -21,9 +20,9 @@ main = do
     let expenses = sort . map read . lines $ contents
 
     case findSumPair 2020 expenses of
-        Just (x,y) -> putStrLn $ "Pair multiplication: " ++ show (x * y)
+        Just (x,y) -> print     $ x * y
         Nothing    -> putStrLn "No two entries sum to 2020"
 
     case findTriplet 2020 expenses of
-        Just (x,y,z) -> putStrLn $ "Triplet multiplication: " ++ show (x * y * z)
+        Just (x,y,z) -> print    $ x * y * z
         Nothing      -> putStrLn "No three entries sum to 2020"

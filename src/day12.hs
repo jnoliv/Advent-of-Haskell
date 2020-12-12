@@ -27,19 +27,44 @@ addCoord (x,y) (x',y') = (x + x', y + y')
 multCoord :: Int -> Coord -> Coord
 multCoord n (x,y) = (n * x, n * y)
 
+-- | Manhattan distance from origin
+manhattanDist :: Coord -> Int
+manhattanDist = (+) <$> abs . fst <*> abs . snd
+
 -- | Navigate from starting direction and position using the list of instructions
-navigate :: Dir -> Coord -> [(Char,Int)] -> Coord
-navigate  _  pos []         = pos
-navigate dir pos ((i,n):is) =
+navigateShip :: Dir -> Coord -> [(Char,Int)] -> Coord
+navigateShip  _  pos []         = pos
+navigateShip dir pos ((i,n):is) =
     case i of
-        'N' -> navigate dir (addCoord pos . multCoord n $ dirToDeltaTuple N) is
-        'E' -> navigate dir (addCoord pos . multCoord n $ dirToDeltaTuple E) is
-        'S' -> navigate dir (addCoord pos . multCoord n $ dirToDeltaTuple S) is
-        'W' -> navigate dir (addCoord pos . multCoord n $ dirToDeltaTuple W) is
-        'L' -> navigate (rotate dir ('L',n)) pos is
-        'R' -> navigate (rotate dir ('R',n)) pos is
-        'F' -> navigate dir (addCoord pos . multCoord n $ dirToDeltaTuple dir) is
-        e  -> error ("Unexpected instruction: " ++ [e])
+        'N' -> navigateShip dir (addCoord pos . multCoord n $ dirToDeltaTuple N) is
+        'E' -> navigateShip dir (addCoord pos . multCoord n $ dirToDeltaTuple E) is
+        'S' -> navigateShip dir (addCoord pos . multCoord n $ dirToDeltaTuple S) is
+        'W' -> navigateShip dir (addCoord pos . multCoord n $ dirToDeltaTuple W) is
+        'L' -> navigateShip (rotate dir ('L',n)) pos is
+        'R' -> navigateShip (rotate dir ('R',n)) pos is
+        'F' -> navigateShip dir (addCoord pos . multCoord n $ dirToDeltaTuple dir) is
+        e   -> error ("Unexpected instruction: " ++ [e])
+
+-- | Navigate from starting direction and position using the list of instructions
+navigateWaypoint :: Coord -> Coord -> [(Char,Int)] -> Coord
+navigateWaypoint shipPos   _    []         = shipPos
+navigateWaypoint shipPos wayPos ((i,n):is) =
+    case i of
+        'N' -> navigateWaypoint shipPos (addCoord wayPos . multCoord n $ dirToDeltaTuple N) is
+        'E' -> navigateWaypoint shipPos (addCoord wayPos . multCoord n $ dirToDeltaTuple E) is
+        'S' -> navigateWaypoint shipPos (addCoord wayPos . multCoord n $ dirToDeltaTuple S) is
+        'W' -> navigateWaypoint shipPos (addCoord wayPos . multCoord n $ dirToDeltaTuple W) is
+        'L' -> navigateWaypoint shipPos (rotateWaypoint wayPos ('L',n)) is
+        'R' -> navigateWaypoint shipPos (rotateWaypoint wayPos ('R',n)) is
+        'F' -> navigateWaypoint (addCoord shipPos $ multCoord n wayPos) wayPos is
+        e   -> error ("Unexpected instruction: " ++ [e])
+
+-- | Rotate the waypoint around the ship (origin) the given amount in the given direction
+rotateWaypoint :: Coord -> (Char,Int) -> Coord
+rotateWaypoint (x,y) (d,n)
+    | (d == 'L' && n == 90) || (d == 'R' && n == 270) = (-y,  x)
+    | (d == 'L' && n == 270) || (d == 'R' && n == 90) = ( y, -x)
+    | n == 180                                        = (-x, -y)
 
 parseInstructions :: String -> [(Char,Int)]
 parseInstructions input = map (\s -> (head s, read $ tail s)) $ lines input
@@ -49,8 +74,12 @@ main = do
     contents <- AdventAPI.readInputDefaults 12
 
     let instructions  = parseInstructions contents
-        finalPos      = navigate E (0,0) instructions
-        manhattanDist = (+) <$> abs . fst <*> abs . snd $ finalPos
+        finalPos1     = navigateShip E (0,0) instructions
+        distance1     = manhattanDist finalPos1
 
-    print manhattanDist
+        finalPos2     = navigateWaypoint (0,0) (-1,10) instructions
+        distance2     = manhattanDist finalPos2
+
+    print distance1
+    print distance2
     

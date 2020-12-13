@@ -1,6 +1,4 @@
-import AdventAPI ( readInputDefaults )
-
-import Data.List ( nub )
+import AdventAPI (readInputDefaults)
 
 data Dir = N | E | S | W
     deriving (Show, Eq, Enum)

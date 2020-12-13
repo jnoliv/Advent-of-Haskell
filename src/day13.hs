@@ -1,8 +1,7 @@
 import AdventAPI (readInputDefaults)
 
-import Data.Maybe (fromJust)
 import Data.List.Split (splitOn)
-import Math.NumberTheory.Moduli.Chinese (chineseRemainder)
+import Math (chineseRemainder)
 
 -- | Find the smallest multiple of 'n' that is bigger than 'limit'
 waitTime :: Integral a => a -> a-> a
@@ -30,4 +29,4 @@ main = do
         depart   = findEarliestDeparture t $ map fst ids
 
     print . uncurry (*) $ depart
-    print . fromJust . chineseRemainder . toChinRemInput $ ids
+    print . chineseRemainder . toChinRemInput $ ids

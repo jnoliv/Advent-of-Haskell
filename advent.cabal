@@ -19,6 +19,7 @@ library
 
   exposed-modules:
     AdventAPI
+    Math
     Utils
   
   build-depends:
@@ -120,4 +121,4 @@ executable day13
   hs-source-dirs:      src
   main-is:             day13.hs
   
-  build-depends:       base, advent, split, arithmoi
+  build-depends:       base, advent, split

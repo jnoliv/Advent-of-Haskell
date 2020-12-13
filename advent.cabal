@@ -120,4 +120,4 @@ executable day13
   hs-source-dirs:      src
   main-is:             day13.hs
   
-  build-depends:       base, advent, split
+  build-depends:       base, advent, split, arithmoi

@@ -1,6 +1,7 @@
 module Utils (
     count, xor,
-    sinsert, findSumPair,
+    sinsert, replace, findSumPair,
+    binToDec,
     Parser, readParsedLines,
     readAsMap
     ) where
@@ -29,6 +30,13 @@ sinsert x (y:ys)
     | x >  y = y : sinsert x ys 
     | x <= y = x : y : ys 
 
+-- | Replace all occurrences of 'cur' by 'new' in the list
+replace :: Eq a => a -> a -> [a] -> [a]
+replace _ _ [] = []
+replace cur new (e:es)
+    | e == cur  = new : replace cur new es
+    | otherwise = e   : replace cur new es
+
 -- | Finds a pair in the given list that sums to the given number.
 -- Uses the two pointer technique to do so, which is probably not the
 -- most efficient way to do this in Haskell. This assumes a sorted input
@@ -51,6 +59,10 @@ findSumPair' sum l r list
 
 
 ---- Parsing abstractions
+
+-- | Convert a list of bits to a decimal number
+binToDec :: Integral a => [a] -> a
+binToDec = foldl (\acc bit -> 2*acc + bit) 0
 
 type Parser a = Parsec Void String a
 

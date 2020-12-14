@@ -1,9 +1,7 @@
 import Control.Applicative (many, (<|>))
 import Data.Bits ((.&.), (.|.))
-import Data.Char (digitToInt, intToDigit)
 import qualified Data.IntMap as M
-import Numeric (showIntAtBase)
-import Utils (Parser, readParsedLines, replace, binToDec)
+import Utils (Parser, readParsedLines, replace, readBin, showBin)
 import Text.Megaparsec.Char (string, alphaNumChar)
 import Text.Megaparsec.Char.Lexer (decimal)
 
@@ -21,7 +19,7 @@ program = Mask <$> (string "mask = " *> many alphaNumChar)
 -- when applied in succession, result in the same as the described mask
 toMasks :: String -> (Int,Int)
 toMasks = (,) <$> conv '1' <*> conv '0'
-    where conv def = binToDec . map digitToInt . replace 'X' def
+    where conv def = readBin . replace 'X' def
 
 -- | Execute the instructions, returning the memory after program execution 
 execute :: [Inst] -> Mem -> (Int, Int) -> Mem
@@ -46,8 +44,8 @@ executeV2 (i:is) mem mask =
 
 -- | Apply the version 2 mask to the address
 applyMaskV2 :: String -> Int -> [Int]
-applyMaskV2 mask val = map (binToDec . map digitToInt) . applyMaskV2' mask $ paddedBinVal
-    where binVal       = showIntAtBase 2 intToDigit val ""
+applyMaskV2 mask val = map readBin . applyMaskV2' mask $ paddedBinVal
+    where binVal       = showBin val
           paddedBinVal = replicate (36 - length binVal) '0' ++ binVal
           
           applyMaskV2' [] _ = [""]

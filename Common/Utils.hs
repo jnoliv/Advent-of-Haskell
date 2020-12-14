@@ -1,16 +1,17 @@
 module Utils (
     count, xor,
     sinsert, replace, findSumPair,
-    binToDec,
+    binToDec, readBin, showBin,
     Parser, readParsedLines,
     readAsMap
-    ) where
+) where
 
 import AdventAPI (readInputDefaults)
-
-import Data.Void (Void)
+import Data.Char (digitToInt, intToDigit)
 import Data.Maybe (catMaybes)
+import Data.Void (Void)
 import qualified Data.Map as Map
+import Numeric (readInt, showIntAtBase)
 import Text.Megaparsec (Parsec, parse, eof, endBy)
 import Text.Megaparsec.Char (char)
 import Text.Megaparsec.Error (errorBundlePretty)
@@ -58,11 +59,19 @@ findSumPair' sum l r list
         curSum = left + right
 
 
----- Parsing abstractions
+---- Parsing and printing
 
 -- | Convert a list of bits to a decimal number
 binToDec :: Integral a => [a] -> a
 binToDec = foldl (\acc bit -> 2*acc + bit) 0
+
+-- | Read a binary number
+readBin :: String -> Int
+readBin = fst . head . readInt 2 (`elem` "01") digitToInt
+
+-- | Show a number in binary
+showBin :: Int -> String
+showBin n = showIntAtBase 2 intToDigit n ""
 
 type Parser a = Parsec Void String a
 

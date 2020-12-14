@@ -1,5 +1,5 @@
 import AdventAPI (readInputDefaults)
-
+import Data.Maybe (fromJust)
 import Data.List.Split (splitOn)
 import Math (chineseRemainder)
 
@@ -29,4 +29,4 @@ main = do
         depart   = findEarliestDeparture t $ map fst ids
 
     print . uncurry (*) $ depart
-    print . chineseRemainder . toChinRemInput $ ids
+    print . fromJust . chineseRemainder . toChinRemInput $ ids

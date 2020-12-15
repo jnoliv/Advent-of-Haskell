@@ -16,12 +16,20 @@ play (turn, last, mem) = (succ turn, a, mem')
     where a    = age last mem
           mem' = say a turn mem
 
+fst3 :: (a,b,c) -> a
+fst3 (a,_,_) = a
+
+snd3 :: (a,b,c) -> b
+snd3 (_,b,_) = b
+
 main :: IO()
 main = do
     contents <- AdventAPI.readInputDefaults 15
 
     let startNums = map read . splitOn "," $ contents
         mem       = M.fromList . zip startNums $ zip [0..] [0..]
-        n2020     = until (\(t,_,_) -> t == 2020) play (length startNums, last startNums, mem)
+        n2020     = until ((==) 2020 . fst3) play (length startNums, last startNums, mem)
+        n30000000 = until ((==) 30000000 . fst3) play (length startNums, last startNums, mem)
 
-    print $ (\(_,n,_) -> n) n2020 
+    print . snd3 $ n2020
+    print . snd3 $ n30000000

@@ -2,7 +2,7 @@ module Utils (
     count, xor,
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
-    Parser, readParsedLines,
+    Parser, readParsedLines, parseLines,
     readAsMap
 ) where
 
@@ -81,11 +81,16 @@ readParsedLines :: Int -> Parser a -> IO [a]
 readParsedLines day parser = do
     input <- readInputDefaults day
 
-    let parserFull = parser `endBy` char '\n' <* eof
+    return $ parseLines parser input
 
-    case parse parserFull "" input of
-        Left e  -> fail $ "\n" ++ errorBundlePretty e
-        Right r -> return r
+-- | Apply the given parser to all lines of the given input
+parseLines :: Parser a -> String -> [a]
+parseLines parser input =
+    let parserFull = parser `endBy` char '\n' <* eof
+    in case parse parserFull "" input of
+        Left e  -> error $ "\n" ++ errorBundlePretty e
+        Right r -> r
+
 
 -- | Read the ASCII input to a map. Receives a function to convert
 -- from char to the map value, wrapped in Maybe to allow ommiting

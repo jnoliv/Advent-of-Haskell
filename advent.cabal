@@ -142,4 +142,4 @@ executable day16
   hs-source-dirs:      src
   main-is:             day16.hs
   
-  build-depends:       base, advent, split, megaparsec
+  build-depends:       base, advent, megaparsec

@@ -2,7 +2,7 @@ module Utils (
     count, xor,
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
-    Parser, readParsedLines, parseLines,
+    Parser, readParsedLines, parseWrapper,
     readAsMap
 ) where
 
@@ -80,17 +80,17 @@ type Parser a = Parsec Void String a
 readParsedLines :: Int -> Parser a -> IO [a]
 readParsedLines day parser = do
     input <- readInputDefaults day
-
-    return $ parseLines parser input
-
--- | Apply the given parser to all lines of the given input
-parseLines :: Parser a -> String -> [a]
-parseLines parser input =
     let parserFull = parser `endBy` char '\n' <* eof
-    in case parse parserFull "" input of
+
+    return $ parseWrapper parserFull input
+
+-- | Apply the given parser to the given input. Manages
+-- error reporting.
+parseWrapper :: Parser a -> String -> a
+parseWrapper parser input =
+    case parse parser "" input of
         Left e  -> error $ "\n" ++ errorBundlePretty e
         Right r -> r
-
 
 -- | Read the ASCII input to a map. Receives a function to convert
 -- from char to the map value, wrapped in Maybe to allow ommiting

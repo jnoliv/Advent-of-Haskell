@@ -1,66 +1,72 @@
-import AdventAPI (readInputDefaults)
-import Control.Applicative (many)
-import Data.List (delete, transpose, isPrefixOf, notElem)
-import Data.List.Split (splitOn)
-import Data.Maybe (mapMaybe)
-import Text.Megaparsec (sepBy, manyTill)
-import Text.Megaparsec.Char (char, string, asciiChar)
-import Text.Megaparsec.Char.Lexer (decimal)
-import Utils (Parser, parseLines)
+{-# Language OverloadedStrings #-}
 
-import Debug.Trace (trace)
+import AdventAPI (readInputDefaults)
+import Control.Applicative ((<|>))
+import Data.Bifunctor (first)
+import Data.List (delete, transpose, isPrefixOf, sortOn)
+import Text.Megaparsec (sepBy, endBy, some)
+import Text.Megaparsec.Char (char, letterChar)
+import Text.Megaparsec.Char.Lexer (decimal)
+import Utils (Parser, parseWrapper)
 
 type Ticket = [Int]
 
 data Rule = Rule { name :: String, l1 :: Int, r1 :: Int, l2 :: Int, r2 :: Int }
     deriving (Eq, Show)
 
-formatRules :: Parser Rule
-formatRules = Rule <$> manyTill asciiChar (char ':') <* char ' '
-                   <*> decimal <* char '-'
-                   <*> decimal <* string " or "
-                   <*> decimal <* char '-'
-                   <*> decimal
+rulesF :: Parser Rule
+rulesF = Rule <$> some (letterChar <|> char ' ') <* ": "
+              <*> decimal <* "-" <*> decimal <* " or "
+              <*> decimal <* "-" <*> decimal
 
-formatTicket :: Parser Ticket
-formatTicket = decimal `sepBy` char ','
+ticketF :: Parser Ticket
+ticketF = decimal `sepBy` ","
+
+format :: Parser ([Rule], Ticket, [Ticket])
+format =
+    (,,) <$>  rulesF `endBy` "\n"  <* "\nyour ticket:\n"
+         <*> ticketF               <* "\n\nnearby tickets:\n"
+         <*> ticketF `endBy` "\n"
 
 -- | Check if any field of the ticket fails all rules.
 -- Also returns the sum of the invalid fields
 checkTicket :: [Rule] -> Ticket -> (Bool, Int)
-checkTicket rules ticket = (null failedFields, sum failedFields) 
-    where checkField rules n = if any (`checkRule` n) rules then Nothing else Just n
-          failedFields       = mapMaybe (checkField rules) ticket
+checkTicket rules ticket = (null invalidFields, sum invalidFields)
+    where invalidFields = [field | field <- ticket, not $ any (`checkRule` field) rules]
 
 -- | Check if the field passes the rule
 checkRule :: Rule -> Int -> Bool
 checkRule (Rule _ l1 r1 l2 r2) n =
     (l1 <= n && n <= r1) || (l2 <= n && n <= r2)
 
--- | Find all valid rules for a list of fields
+-- | Find all valid rules for a list of fields (not a ticket,
+-- a list of a field in all tickets)
 findValidRules :: [(Rule, Int)] -> [Int] -> [Int]
 findValidRules rulesIndexed fields = [i | (r, i) <- rulesIndexed, all (checkRule r) fields]
 
--- |
-findRuleOrder :: Int -> [[Int]] -> [Int] -> [Int]
-findRuleOrder _      []     chosen = chosen
-findRuleOrder nRules (r:rs) chosen = if null validOrderings then [] else head validOrderings
-    where availableRules = filter (`notElem` chosen) r
-          allOrderings   = map (findRuleOrder nRules rs . (chosen ++) . return) availableRules
-          validOrderings = filter ((== nRules) . length) allOrderings
+-- | Reorder the rules ascending by length of possibilities, keeping the
+-- original index. Apply the greedy algorithm and then reorder using said
+-- index. Drop the indexes and return the order of the rules
+findRuleOrder :: [[Int]] -> [Int]
+findRuleOrder rules = map fst . sortOn snd . greedy $ sz
+    where sz = sortOn (length . fst) $ zip rules [0..] :: [([Int], Int)]
+
+-- | By printing 'validRules' it is clear that by fixing the rule to the
+-- column that only has one possible rule, this process can then be repeated
+-- finding the ordering greedily  
+greedy :: [([Int], Int)] -> [(Int, Int)]
+greedy []           = []
+greedy (rule:rules) = (choice, snd rule) : (greedy . map (first (delete choice)) $ rules)
+    where choice = head . fst $ rule
 
 main :: IO()
 main = do
-    [rulesR, ownTicketR, ticketsR] <- splitOn "\n\n" <$> AdventAPI.readInputDefaults 16
+    (rules, ownTicket, tickets) <- parseWrapper format <$> AdventAPI.readInputDefaults 16
 
-    let rules        = parseLines formatRules $ rulesR ++ "\n"
-        ownTicket    = head . parseLines formatTicket . tail . dropWhile (/= '\n') $ ownTicketR ++ "\n"
-        tickets      = parseLines formatTicket . tail . dropWhile (/= '\n') $ ticketsR
-
-        validTickets = filter (fst . checkTicket rules) tickets
+    let validTickets = filter (fst . checkTicket rules) tickets
         validRules   = map (findValidRules $ zip rules [0..]) $ transpose validTickets
-        ruleOrder    = findRuleOrder (length rules) validRules []
-        prod         = product . map fst . filter (("departure" `isPrefixOf`) . name . snd) . zip ownTicket $ map (rules !!) ruleOrder
+        rulesInOrder = map (rules !!) $ findRuleOrder validRules
+        prod         = product . map fst . filter (("departure" `isPrefixOf`) . name . snd) . zip ownTicket $ rulesInOrder
 
     print . sum . map (snd . checkTicket rules) $ tickets
     print prod

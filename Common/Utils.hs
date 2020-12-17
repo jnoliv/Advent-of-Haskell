@@ -3,14 +3,16 @@ module Utils (
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
     Parser, readParsedLines, parseWrapper,
-    readAsMap
+    readAsMap, readAsSet
 ) where
 
 import AdventAPI (readInputDefaults)
 import Data.Char (digitToInt, intToDigit)
+import Data.Function (on)
 import Data.Maybe (catMaybes)
-import Data.Void (Void)
 import qualified Data.Map as Map
+import qualified Data.Set as Set
+import Data.Void (Void)
 import Numeric (readInt, showIntAtBase)
 import Text.Megaparsec (Parsec, parse, eof, endBy)
 import Text.Megaparsec.Char (char)
@@ -92,12 +94,21 @@ parseWrapper parser input =
         Left e  -> error $ "\n" ++ errorBundlePretty e
         Right r -> r
 
+indexGrid2D :: Integral a => [[(a,a)]]
+indexGrid2D = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
+
 -- | Read the ASCII input to a map. Receives a function to convert
 -- from char to the map value, wrapped in Maybe to allow ommiting
--- positions from the resulting map
+-- positions from the resulting map.
 readAsMap :: (Char -> Maybe a) -> String -> Map.Map (Int, Int) a
-readAsMap f input = Map.fromList . catMaybes . concatMap (map maybeT) $ zipWith zip inds ls
-    where ls    = map (map f) . lines $ input
-          inds  = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
+readAsMap f input = Map.fromList . catMaybes . concatMap (map maybeT) $ zipWith zip indexGrid2D ls
+    where ls = map (map f) . lines $ input
           maybeT (x, Just y)  = Just (x,y)
           maybeT (_, Nothing) = Nothing
+
+-- | Read the ASCII input to a set. Receives a function to define
+-- which characters should be included in the set (or their positions,
+-- rather).
+readAsSet :: (Char -> Bool) -> String -> Set.Set (Int,Int)
+readAsSet f input = Set.fromList . map fst . filter snd . concat $ zipWith zip indexGrid2D ls
+    where ls = map (map f) . lines $ input

@@ -1,44 +1,22 @@
 import AdventAPI (readInputDefaults)
+import Data.List (delete)
 import qualified Data.Set as S
 import Utils (readAsSet)
 
-type Coord3 = (Int,Int,Int)
+type CoordN = [Int]
 
-getNeighbours :: Coord3 -> [Coord3]
-getNeighbours (x,y,z) =
-    [(x + dx, y + dy, z + dz) | dx <- [-1..1], dy <- [-1..1], dz <- [-1..1], dx /= 0 || dy /= 0 || dz /= 0]
+getNeighbours :: CoordN -> [CoordN]
+getNeighbours p = delete p . traverse (\c -> [c - 1, c, c + 1]) $ p
 
-countActiveNeighbours :: S.Set Coord3 -> Coord3 -> Int
+countActiveNeighbours :: S.Set CoordN -> CoordN -> Int
 countActiveNeighbours set = length . filter (`S.member` set) . getNeighbours
 
-step :: S.Set Coord3 -> S.Set Coord3
+step :: S.Set CoordN -> S.Set CoordN
 step set = S.union new kept
     where neighbours         = S.foldr (\pos set' -> S.union set' . S.fromList $ getNeighbours pos) S.empty set
           inactiveNeighbours = S.filter (`S.notMember` set) neighbours
           new                = S.filter ((== 3) . countActiveNeighbours set) inactiveNeighbours
           kept               = S.filter ((`elem` [2,3]) . countActiveNeighbours set) set
-
-----------------------------------------------
-
-type Coord4 = (Int,Int,Int,Int)
-
-getHyperNeighbours :: Coord4 -> [Coord4]
-getHyperNeighbours (x,y,z,w) =
-    [(x + dx, y + dy, z + dz, w + dw) 
-    | dx <- [-1..1], dy <- [-1..1], dz <- [-1..1], dw <- [-1..1]
-    , dx /= 0 || dy /= 0 || dz /= 0 || dw /= 0]
-
-countActiveHyperNeighbours :: S.Set Coord4 -> Coord4 -> Int
-countActiveHyperNeighbours set = length . filter (`S.member` set) . getHyperNeighbours
-
-hyperStep :: S.Set Coord4 -> S.Set Coord4
-hyperStep set = S.union new kept
-    where neighbours         = S.foldr (\pos set' -> S.union set' . S.fromList $ getHyperNeighbours pos) S.empty set
-          inactiveNeighbours = S.filter (`S.notMember` set) neighbours
-          new                = S.filter ((== 3) . countActiveHyperNeighbours set) inactiveNeighbours
-          kept               = S.filter ((`elem` [2,3]) . countActiveHyperNeighbours set) set
-
-----------------------------------------------
 
 main :: IO()
 main = do
@@ -46,11 +24,11 @@ main = do
 
     let slice       = readAsSet (== '#') contents
 
-        game        = S.map (\(x,y) -> (x,y,0)) slice
+        game        = S.map (\(x,y) -> [x,y,0]) slice
         cycle6      = (!! 6) . iterate step $ game
 
-        hyperGame   = S.map (\(x,y) -> (x,y,0,0)) slice
-        hyperCycle6 = (!! 6) . iterate hyperStep $ hyperGame
+        hyperGame   = S.map (\(x,y) -> [x,y,0,0]) slice
+        hyperCycle6 = (!! 6) . iterate step $ hyperGame
 
     print $ S.size cycle6
     print $ S.size hyperCycle6

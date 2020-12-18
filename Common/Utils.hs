@@ -2,7 +2,7 @@ module Utils (
     count, xor,
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
-    Parser, readParsedLines, parseWrapper,
+    Parser, readParsedLines, parseLines, parseWrapper,
     readAsMap, readAsSet
 ) where
 
@@ -82,9 +82,13 @@ type Parser a = Parsec Void String a
 readParsedLines :: Int -> Parser a -> IO [a]
 readParsedLines day parser = do
     input <- readInputDefaults day
-    let parserFull = parser `endBy` char '\n' <* eof
+    return $ parseLines parser input
 
-    return $ parseWrapper parserFull input
+-- | Apply the given parser to all lines of said input
+parseLines :: Parser a -> String -> [a]
+parseLines parser input =
+    let parserFull = parser `endBy` char '\n' <* eof
+    in parseWrapper parserFull input
 
 -- | Apply the given parser to the given input. Manages
 -- error reporting.

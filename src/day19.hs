@@ -4,18 +4,19 @@ import AdventAPI (readInputDefaults)
 import Control.Applicative (many, optional, (<|>))
 import Control.Monad.State
 import qualified Data.IntMap as M
+import Data.List (isPrefixOf)
 import Text.Megaparsec (endBy, sepBy, oneOf)
 import Text.Megaparsec.Char (letterChar)
 import Text.Megaparsec.Char.Lexer (decimal)
 import Utils (count, Parser, parseWrapper)
 
-data Rule = Rule [[Int]] | Term Char
+data Rule = Rule [[Int]] | Term String
     deriving Show
 
 type RuleMap = M.IntMap Rule
 
 terminal :: Parser Rule
-terminal = Term <$> ("\"" *> letterChar <* "\"")
+terminal = Term <$> ("\"" *> many letterChar <* "\"")
 
 subrule :: Parser Rule
 subrule = Rule <$> many (decimal <* optional " ") `sepBy` "| "
@@ -30,7 +31,7 @@ format :: Parser ([(Int, Rule)], [String])
 format = (,) <$> (rule `endBy` "\n") <* "\n" <*> (message `endBy` "\n")
 
 -- | Match all of the rules
-matchSubrule :: RuleMap -> [Int] -> State String Bool
+matchSubrule :: RuleMap -> [Int] -> State [String] Bool
 matchSubrule _ [] = return True
 matchSubrule ruleMap (r:rs) = do
     toMatch <- get
@@ -46,25 +47,28 @@ matchSubrule ruleMap (r:rs) = do
                 else put toMatch >> return False
 
 -- | Match one of the subrules
-matchRule :: RuleMap -> [[Int]] -> State String Bool
-matchRule _ [] = return False
+matchRule :: RuleMap -> [[Int]] -> State [String] Bool
+matchRule _ [] = put [] >> return False
 matchRule ruleMap (sr:srs) = do
-    success <- matchSubrule ruleMap sr
+    toMatchB <- get
+    let (success, toMatchA)  = runState (matchSubrule ruleMap sr) toMatchB
+        (success', toMatch') = runState (matchRule ruleMap srs) toMatchB
 
     if success
-        then return True
-        else matchRule ruleMap srs
+        then put (toMatchA ++ toMatch') >> return True
+        else put toMatch' >> return success'
 
 -- | Match a rule
-match :: RuleMap -> Int -> State String Bool
+match :: RuleMap -> Int -> State [String] Bool
 match ruleMap ruleId = do
     let Just rule = M.lookup ruleId ruleMap
 
     toMatch <- get
     case rule of
-        Term c -> if head toMatch == c
-            then put (tail toMatch) >> return True
-            else return False
+        Term s -> let matches = filter (s `isPrefixOf`) toMatch
+            in if null matches
+                then return False
+                else put (map tail matches) >> return True
         Rule subrules -> matchRule ruleMap subrules
 
 main :: IO()
@@ -72,7 +76,10 @@ main = do
     input <- readInputDefaults 19
     let (rules, messages) = parseWrapper format input
         ruleMap           = M.fromList rules
+        ruleMap2          = M.insert 8 (Rule [[42], [42,8]]) . M.insert 11 (Rule [[42,11,31], [42,31]]) $ ruleMap
 
-        success (b,s)     = b && null s
+        success (b,s)     = b && any null s
+        go rm             = print . count id . map (success . runState (match rm 0) . return)
 
-    print . count id . map (success . runState (match ruleMap 0)) $ messages
+    go ruleMap  messages
+    go ruleMap2 messages

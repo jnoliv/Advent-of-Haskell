@@ -3,7 +3,7 @@
 import Control.Applicative (many)
 import Data.Bifunctor (second)
 import Data.Function (on)
-import Data.List (sortBy, delete, intercalate)
+import Data.List (sort, sortBy, delete, intercalate)
 import qualified Data.Map as M
 import qualified Data.Set as S
 import Utils (Parser, readParsedLines, count)
@@ -19,12 +19,11 @@ format = (,) <$> ings <* "(contains " <*> algs <* ")"
           algs = many letterChar `sepBy` ", "
 
 mergeAlgsPossibilities :: [([String], [String])] -> Algs
-mergeAlgsPossibilities = foldl foldFunc M.empty . concatMap toAlgSet
-    where foldFunc acc (k,v) = M.insertWith S.intersection k v acc
-          toAlgSet (i,a)     = map (, S.fromList i) a
+mergeAlgsPossibilities = M.fromListWith S.intersection . concatMap toAlgSet
+    where toAlgSet (i,a) = map (, S.fromList i) a
 
 mapAlgsToIngs :: Algs -> [(String, String)]
-mapAlgsToIngs = sortBy (compare `on` fst) . foldAlgs . sortByNIngs .  map (second S.toList) . M.toList
+mapAlgsToIngs = foldAlgs . sortByNIngs .  map (second S.toList) . M.toList
     where sortByNIngs = sortBy (compare `on` (length . snd))
           
           foldAlgs [] = []
@@ -34,14 +33,9 @@ main :: IO()
 main = do
     input <- readParsedLines 21 format
 
-    let allIngredients    = concatMap fst input
-        uniqueIngredients = S.fromList allIngredients
-        algsPossibilities = mergeAlgsPossibilities input
-        
+    let algsPossibilities = mergeAlgsPossibilities input
         potencialAlgs     = M.foldr S.union S.empty algsPossibilities
-        safeIngredients   = uniqueIngredients S.\\ potencialAlgs
-
         algsIngsMapping   = mapAlgsToIngs algsPossibilities
 
-    print . count (`S.member` safeIngredients) $ allIngredients
-    putStrLn . intercalate "," . map snd $ algsIngsMapping
+    print . count (`S.notMember` potencialAlgs) . concatMap fst $ input
+    putStrLn . intercalate "," . map snd . sort $ algsIngsMapping

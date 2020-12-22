@@ -3,12 +3,13 @@ module Utils (
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
     Parser, readParsedLines, parseLines, parseWrapper,
-    readAsMap, readAsSet
+    readAsMap, showMap, readAsSet
 ) where
 
 import AdventAPI (readInputDefaults)
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
+import Data.List (intercalate)
 import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
@@ -109,6 +110,17 @@ readAsMap f input = Map.fromList . catMaybes . concatMap (map maybeT) $ zipWith 
     where ls = map (map f) . lines $ input
           maybeT (x, Just y)  = Just (x,y)
           maybeT (_, Nothing) = Nothing
+
+-- | Show a rectangular map using 'f' to convert elements to
+-- characters and 'def' as the default value in the map
+showMap :: (a -> Char) -> a -> Map.Map (Int, Int) a -> String
+showMap f def m = intercalate "\n" $ map (map (f . findWithDefault)) indexes
+    where (y0,x0) = fst $ Map.findMin m
+          (y1,x1) = fst $ Map.findMax m
+          nRows   = y1 - y0 + 1
+          nCols   = x1 - x0 + 1
+          indexes = take nRows . map (take nCols) $ indexGrid2D
+          findWithDefault k = Map.findWithDefault def k m
 
 -- | Read the ASCII input to a set. Receives a function to define
 -- which characters should be included in the set (or their positions,

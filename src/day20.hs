@@ -1,21 +1,51 @@
+{-# Language OverloadedStrings #-}
+
 import AdventAPI (readInputDefaults)
+import Data.Bifunctor (second)
+import Data.List (intersect)
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import Utils (readAsMap, binToDec, readBin, showBin, count)
 
 type ImageData = M.Map (Int,Int) Int
 
-data Tile = Tile { tid           :: Integer,
-                   image         :: ImageData,
-                   up            :: Int,
-                   right         :: Int,
-                   down          :: Int,
-                   left          :: Int,
-                   borderMatches :: Int
-            } deriving Show
+data Tile = Tile { tileId :: Integer, image :: ImageData, neighbours :: [Integer] }
+    deriving Show
 
-borders :: Tile -> [Int]
-borders tile = map ($ tile) [up, right, down, left]
+-- Border operations
+
+border :: ((Int,Int) -> Int -> Bool) -> ImageData -> Int
+border f = binToDec . map snd . M.toAscList . M.filterWithKey f
+
+topBorder, bottomBorder, leftBorder, rightBorder :: Int -> ImageData -> Int
+topBorder    _    = border (\k _ -> fst k == 0) 
+bottomBorder size = border (\k _ -> fst k == size - 1)
+leftBorder   size = border (\k _ -> snd k == size - 1)
+rightBorder  _    = border (\k _ -> snd k == 0)
+
+invert :: Int -> Int -> Int
+invert n b = readBin . reverse $ binPadded
+    where bin       = showBin b
+          binPadded = replicate (n - length bin) '0' ++ bin
+
+normalize :: Int -> Int -> Int
+normalize n b = min b $ invert n b
+
+borders :: Int -> ImageData -> [Int]
+borders n img = map (($ img) . ($ n)) [topBorder, rightBorder, bottomBorder, leftBorder]
+
+-- Match tiles
+
+matchNeighbours :: Int -> [(Integer, ImageData)] -> [Tile]
+matchNeighbours n tiles = map (\(tid, img) -> Tile tid img (findNeighbours tid withBorders)) tiles
+    where withBorders = map (second (map (normalize n) . borders n)) tiles
+
+findNeighbours :: Integer -> [(Integer, [Int])] -> [Integer]
+findNeighbours tid withBorders = map fst . filter ((== 1) . length . intersect ownBorders . snd) $ otherTiles 
+    where otherTiles = filter ((/= tid) . fst) withBorders
+          ownBorders = snd . head . filter ((== tid) . fst) $ withBorders
+
+-- Parse
 
 parseInput :: String -> [(Integer, ImageData)]
 parseInput = map parseTile . splitOn "\n\n"
@@ -25,39 +55,14 @@ parseTile tile = (tid, tileMap)
     where tid     = read . take 4 . drop 5 $ tile
           tileMap = readAsMap (\c -> if c == '#' then Just 1 else Just 0) $ drop 11 tile
 
--- | Invert the border. For example, if the top border of a tile
--- will match the top border of another tile after 180º rotation,
--- the representation of the border will be different. This computes
--- that new representation.
-invert :: Int -> Int -> Int
-invert n b = readBin . reverse $ bin'
-    where bin = showBin b
-          bin' = replicate (n - length bin) '0' ++ bin
-
--- | Encode each border as a binary number
-encodeBorders :: Int -> (Integer, ImageData) -> Tile
-encodeBorders size (tid, tile) = Tile tid tile upB downB rightB leftB 0
-    where getBorder f = binToDec . map snd . M.toAscList . M.filterWithKey f $ tile
-          upB    = getBorder (\k _ -> fst k == 0)
-          downB  = getBorder (\k _ -> fst k == size - 1)
-          rightB = getBorder (\k _ -> snd k == size - 1)
-          leftB  = getBorder (\k _ -> snd k == 0)
-
--- | This could very much be optimized, but it doesn't matter right now
-countBorderMatches :: Int -> [Tile] -> [Tile] -> [Tile]
-countBorderMatches _ _ [] = []
-countBorderMatches tileSize allTiles (curTile:tiles) =
-    curTile { borderMatches = bm } : countBorderMatches tileSize allTiles tiles
-    where matchBorder b = count (==b) . concatMap borders . filter ((/= tid curTile) . tid) $ allTiles
-          bm = sum . map matchBorder $ borders curTile ++ map (invert tileSize) (borders curTile)
-
-
 main :: IO()
 main = do
     input <- readInputDefaults 20
-    let tiles     = parseInput input
-        tileSize  = round . sqrt . fromIntegral . M.size . snd . head $ tiles
-        encTiles' = map (encodeBorders tileSize) tiles
-        encTiles  = countBorderMatches tileSize encTiles' encTiles'
 
-    print . product . map tid . filter ((== 2) . borderMatches) $ encTiles
+    let rawTiles  = parseInput input
+        tileSize  = round . sqrt . fromIntegral . M.size . snd . head $ rawTiles
+
+        tiles     = matchNeighbours tileSize rawTiles
+        corners   = filter ((== 2) . length . neighbours) $ tiles
+
+    print . product . map tileId $ corners

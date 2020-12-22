@@ -1,57 +1,54 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
+import Data.Foldable (toList)
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
 import Text.Megaparsec (endBy)
 import Text.Megaparsec.Char.Lexer (decimal)
 import Utils (Parser, parseWrapper)
 
-data GameSt = Ongoing | Win Int
-    deriving Eq
-
-type Game = ([Int], [Int])
-type RecGame = (Game, GameSt, [Game])
+type Deck    = Seq.Seq Int
+type Game    = (Deck, Deck)
+data RecGame = Ongoing Game (Set.Set Game) | Win1 Deck | Win2 Deck
 
 format :: Parser Game
-format = (,) <$> ("Player 1:\n"   *> decimal `endBy` "\n")
-             <*> ("\nPlayer 2:\n" *> decimal `endBy` "\n")
+format = (,) <$> (Seq.fromList <$> ("Player 1:\n"   *> decimal `endBy` "\n"))
+             <*> (Seq.fromList <$> ("\nPlayer 2:\n" *> decimal `endBy` "\n"))
 
------------------------------------------------------------------
-turn :: Game -> Game
-turn (c1:cs1, c2:cs2) = 
-    if c1 > c2
-        then (cs1 ++ [c1,c2], cs2)
-        else (cs1, cs2 ++ [c2,c1])
+combat :: Game -> Deck
+combat (Seq.Empty, d) = d
+combat (d, Seq.Empty) = d
+combat (c1 Seq.:<| d1, c2 Seq.:<| d2)
+    | c1 > c2   = combat (append c1 c2 d1, d2)
+    | otherwise = combat (d1, append c2 c1 d2)
 
-play :: Game -> Game
-play = until ((||) <$> null . fst <*> null . snd) turn
+recursiveCombat :: RecGame -> RecGame
+recursiveCombat (Ongoing (Seq.Empty, d) _) = Win2 d
+recursiveCombat (Ongoing (d, Seq.Empty) _) = Win1 d
+recursiveCombat (Ongoing g@(c1 Seq.:<| d1, c2 Seq.:<| d2) rounds)
+    | g `Set.member` rounds = Win1 d1
+    | Seq.length d1 >= c1 && Seq.length d2 >= c2 =
+        continue $ recursiveCombat (Ongoing (Seq.take c1 d1, Seq.take c2 d2) Set.empty)
+    | otherwise = continue $ if c1 > c2 then Win1 Seq.Empty else Win2 Seq.Empty
+    where
+        rearrange (Win1 _) = (append c1 c2 d1, d2)
+        rearrange (Win2 _) = (d1, append c2 c1 d2)
+        continue rg = recursiveCombat (Ongoing (rearrange rg) (Set.insert g rounds))
 
------------------------------------------------------------------
+append :: Int -> Int -> Deck -> Deck
+append c1 c2 d = d Seq.|> c1 Seq.|> c2
 
-playRec :: RecGame -> RecGame
-playRec = until (\(_, st, _) -> st /= Ongoing) turnRec
+score :: Deck -> Int
+score = sum . zipWith (*) [1..] . reverse . toList
 
-turnRec :: RecGame -> RecGame
-turnRec (g@(_,[]), _, prevGames) = (g, Win 1, prevGames)
-turnRec (g@([],_), _, prevGames) = (g, Win 2, prevGames)
-turnRec (g@(c1:cs1, c2:cs2), _, prevGames)
-    | g `elem` prevGames = (g, Win 1, prevGames)
-    | length cs1 >= c1 && length cs2 >= c2 =
-        rearrange $ playRec ((take c1 cs1, take c2 cs2), Ongoing, [])
-    | otherwise =
-        rearrange (g, if c1 > c2 then Win 1 else Win 2, prevGames)
-    where rearrange (_, Win 1, _) = ((cs1 ++ [c1,c2], cs2), Ongoing, g : prevGames)
-          rearrange (_, Win 2, _) = ((cs1, cs2 ++ [c2,c1]), Ongoing, g : prevGames)
-
------------------------------------------------------------------
-
-score :: Game -> Int
-score = sum . zipWith (*) [1..] . reverse . winnerDeck
-    where winnerDeck (d, []) = d
-          winnerDeck ([], d) = d
+recursiveScore :: RecGame -> Int
+recursiveScore (Win1 d) = score d
+recursiveScore (Win2 d) = score d
 
 main :: IO()
 main = do
     gameStart <- parseWrapper format <$> readInputDefaults 22
 
-    print . score $ play gameStart
-    print . score . (\(g,_,_) -> g) $ playRec (gameStart, Ongoing, [])
+    print . score . combat $ gameStart
+    print . recursiveScore . recursiveCombat $ Ongoing gameStart Set.empty 

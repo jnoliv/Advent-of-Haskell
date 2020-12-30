@@ -1,14 +1,12 @@
 {-# Language OverloadedStrings, TupleSections #-}
 
-import Control.Applicative (many)
-import Advent.Utils (Parser, readParsedLines, count)
+import Advent.Megaparsec
+import Advent.Utils (count)
 import Data.Bifunctor (second)
 import Data.Function (on)
 import Data.List (sort, sortBy, delete, intercalate)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Text.Megaparsec (endBy, sepBy)
-import Text.Megaparsec.Char (letterChar)
 
 type AlgSet = S.Set String
 type Algs   = M.Map String AlgSet

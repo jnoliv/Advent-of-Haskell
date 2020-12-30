@@ -15,6 +15,7 @@ library
   exposed-modules:
     AdventAPI
     Advent.Math
+    Advent.Megaparsec
     Advent.Utils
   
   build-depends:

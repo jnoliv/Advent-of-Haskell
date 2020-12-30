@@ -2,22 +2,16 @@ module Advent.Utils (
     count, xor,
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,
-    Parser, readParsedLines, parseLines, parseWrapper,
     readAsMap, showMap, readAsSet
 ) where
 
-import AdventAPI (readInputDefaults)
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import Data.Void (Void)
 import Numeric (readInt, showIntAtBase)
-import Text.Megaparsec (Parsec, parse, eof, endBy)
-import Text.Megaparsec.Char (char)
-import Text.Megaparsec.Error (errorBundlePretty)
 
 -- | Count occurences in the given list that satisfy 'cond'
 count :: (a -> Bool) -> [a] -> Int
@@ -75,29 +69,6 @@ readBin = fst . head . readInt 2 (`elem` "01") digitToInt
 -- | Show a number in binary
 showBin :: Int -> String
 showBin n = showIntAtBase 2 intToDigit n ""
-
-type Parser a = Parsec Void String a
-
--- | Read the input of the given day and apply the given
--- parser to all lines of said input
-readParsedLines :: Int -> Int -> Parser a -> IO [a]
-readParsedLines year day parser = do
-    input <- readInputDefaults year day
-    return $ parseLines parser input
-
--- | Apply the given parser to all lines of said input
-parseLines :: Parser a -> String -> [a]
-parseLines parser input =
-    let parserFull = parser `endBy` char '\n' <* eof
-    in parseWrapper parserFull input
-
--- | Apply the given parser to the given input. Manages
--- error reporting.
-parseWrapper :: Parser a -> String -> a
-parseWrapper parser input =
-    case parse parser "" input of
-        Left e  -> error $ "\n" ++ errorBundlePretty e
-        Right r -> r
 
 indexGrid2D :: Integral a => [[(a,a)]]
 indexGrid2D = map (`zip` [0..]) . fmap (cycle . return) $ [0..]

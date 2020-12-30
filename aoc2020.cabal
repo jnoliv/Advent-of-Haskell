@@ -28,7 +28,6 @@ executable day01
 executable day02
   import:            day
   main-is:           day02.hs
-  build-depends:     megaparsec
 
 executable day03
   import:            day
@@ -86,7 +85,7 @@ executable day13
 executable day14
   import:            day
   main-is:           day14.hs
-  build-depends:     containers, megaparsec
+  build-depends:     containers
 
 executable day15
   import:            day
@@ -96,7 +95,6 @@ executable day15
 executable day16
   import:            day
   main-is:           day16.hs
-  build-depends:     megaparsec
 
 executable day17
   import:            day
@@ -106,12 +104,11 @@ executable day17
 executable day18
   import:            day
   main-is:           day18.hs
-  build-depends:     megaparsec
 
 executable day19
   import:            day
   main-is:           day19.hs
-  build-depends:     containers, megaparsec, mtl
+  build-depends:     containers, mtl
 
 executable day20
   import:            day
@@ -121,12 +118,12 @@ executable day20
 executable day21
   import:            day
   main-is:           day21.hs
-  build-depends:     containers, megaparsec
+  build-depends:     containers
 
 executable day22
   import:            day
   main-is:           day22.hs
-  build-depends:     containers, megaparsec
+  build-depends:     containers
 
 executable day23
   import:            day
@@ -136,7 +133,7 @@ executable day23
 executable day24
   import:            day
   main-is:           day24.hs
-  build-depends:     containers, megaparsec
+  build-depends:     containers
 
 executable day25
   import:            day

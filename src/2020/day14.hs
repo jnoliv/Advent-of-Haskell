@@ -1,9 +1,7 @@
-import Advent.Utils (Parser, readParsedLines, replace, readBin, showBin)
-import Control.Applicative (many, (<|>))
+import Advent.Megaparsec
+import Advent.Utils (replace, readBin, showBin)
 import Data.Bits ((.&.), (.|.))
 import qualified Data.IntMap as M
-import Text.Megaparsec.Char (string, alphaNumChar)
-import Text.Megaparsec.Char.Lexer (decimal)
 
 type Mem = M.IntMap Int
 

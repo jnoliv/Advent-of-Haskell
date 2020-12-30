@@ -1,13 +1,9 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
-import Advent.Utils (Parser, parseWrapper)
-import Control.Applicative ((<|>))
+import Advent.Megaparsec
 import Data.Bifunctor (first)
 import Data.List (delete, transpose, isPrefixOf, sortOn)
-import Text.Megaparsec (sepBy, endBy, some)
-import Text.Megaparsec.Char (char, letterChar)
-import Text.Megaparsec.Char.Lexer (decimal)
 
 type Ticket = [Int]
 

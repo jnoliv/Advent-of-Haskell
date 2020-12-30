@@ -1,14 +1,11 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
-import Advent.Utils (count, Parser, parseWrapper)
-import Control.Applicative (many, optional, (<|>))
+import Advent.Megaparsec
+import Advent.Utils (count)
 import Control.Monad.State
 import qualified Data.IntMap as M
 import Data.List (isPrefixOf)
-import Text.Megaparsec (endBy, sepBy, oneOf)
-import Text.Megaparsec.Char (letterChar)
-import Text.Megaparsec.Char.Lexer (decimal)
 
 data Rule = Rule [[Int]] | Term String
     deriving Show

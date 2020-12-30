@@ -1,12 +1,10 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
-import Advent.Utils (Parser, parseWrapper)
+import Advent.Megaparsec
 import Data.Foldable (toList)
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
-import Text.Megaparsec (endBy)
-import Text.Megaparsec.Char.Lexer (decimal)
 
 type Deck    = Seq.Seq Int
 type Game    = (Deck, Deck)

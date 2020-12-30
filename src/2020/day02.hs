@@ -1,7 +1,5 @@
-import Advent.Utils (xor, count, Parser, readParsedLines)
-import Text.Megaparsec (many)
-import Text.Megaparsec.Char (char, letterChar, string)
-import Text.Megaparsec.Char.Lexer (decimal)
+import Advent.Megaparsec
+import Advent.Utils (xor, count)
 
 type PasswordData = ((Int, Int), Char, String)
 

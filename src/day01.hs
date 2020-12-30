@@ -1,6 +1,6 @@
 import AdventAPI
+import Advent.Utils (findSumPair)
 import Data.List (sort)
-import Utils (findSumPair)
 
 -- | Finds a triplet in the given list that sums to the given number.
 -- Fixes a number and then uses the two pointer technique to see if any pair

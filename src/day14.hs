@@ -1,7 +1,7 @@
+import Advent.Utils (Parser, readParsedLines, replace, readBin, showBin)
 import Control.Applicative (many, (<|>))
 import Data.Bits ((.&.), (.|.))
 import qualified Data.IntMap as M
-import Utils (Parser, readParsedLines, replace, readBin, showBin)
 import Text.Megaparsec.Char (string, alphaNumChar)
 import Text.Megaparsec.Char.Lexer (decimal)
 

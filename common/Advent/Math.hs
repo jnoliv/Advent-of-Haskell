@@ -1,4 +1,4 @@
-module Math (
+module Advent.Math (
     egcd, chineseRemainder
 ) where
 

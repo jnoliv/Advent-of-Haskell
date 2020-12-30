@@ -1,11 +1,11 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
+import Advent.Utils (Parser, parseLines)
 import Control.Applicative ((<|>))
 import Text.Megaparsec (try, oneOf)
 import Text.Megaparsec.Char (char)
 import Text.Megaparsec.Char.Lexer (decimal)
-import Utils (Parser, parseLines)
 
 data ExpTree = Exp ExpTree Char ExpTree | Term Integer
 

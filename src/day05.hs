@@ -1,6 +1,6 @@
 import AdventAPI
+import Advent.Utils (binToDec)
 import Data.List (sort)
-import Utils (binToDec)
 
 -- | Parse a character of the binary space partioning into a bit
 bspToBit :: Char -> Int

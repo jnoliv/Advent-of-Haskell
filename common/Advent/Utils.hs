@@ -1,4 +1,4 @@
-module Utils (
+module Advent.Utils (
     count, xor,
     sinsert, replace, findSumPair,
     binToDec, readBin, showBin,

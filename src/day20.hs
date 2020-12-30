@@ -1,13 +1,13 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
+import Advent.Utils (readAsMap, binToDec, readBin, showBin, count)
 import Data.Bifunctor (first, second)
 import Data.Function (on)
 import Data.List (intersect, sortOn, notElem)
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import Data.Maybe (mapMaybe, listToMaybe)
-import Utils (readAsMap, binToDec, readBin, showBin, count)
 
 type ImageData = M.Map (Int,Int) Int
 

@@ -1,12 +1,12 @@
 {-# Language OverloadedStrings, TupleSections #-}
 
 import Control.Applicative (many)
+import Advent.Utils (Parser, readParsedLines, count)
 import Data.Bifunctor (second)
 import Data.Function (on)
 import Data.List (sort, sortBy, delete, intercalate)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Utils (Parser, readParsedLines, count)
 import Text.Megaparsec (endBy, sepBy)
 import Text.Megaparsec.Char (letterChar)
 

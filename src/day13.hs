@@ -1,7 +1,7 @@
 import AdventAPI (readInputDefaults)
+import Advent.Math (chineseRemainder)
 import Data.Maybe (fromJust)
 import Data.List.Split (splitOn)
-import Math (chineseRemainder)
 
 -- | Find the smallest multiple of 'n' that is bigger than 'limit'
 waitTime :: Integral a => a -> a-> a

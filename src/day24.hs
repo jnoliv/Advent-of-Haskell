@@ -1,10 +1,10 @@
 {-# Language OverloadedStrings #-}
 
 import Control.Applicative ((<|>))
+import Advent.Utils (Parser, readParsedLines, count)
 import Data.Functor (($>))
 import qualified Data.Set as Set
 import Text.Megaparsec (manyTill, lookAhead)
-import Utils (Parser, readParsedLines, count)
 
 type AxialCoord  = (Int,Int)
 type Tiles       = Set.Set AxialCoord

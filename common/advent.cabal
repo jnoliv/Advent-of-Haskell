@@ -14,8 +14,8 @@ library
 
   exposed-modules:
     AdventAPI
-    Math
-    Utils
+    Advent.Math
+    Advent.Utils
   
   build-depends:
     base,

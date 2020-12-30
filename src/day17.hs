@@ -1,7 +1,7 @@
 import AdventAPI (readInputDefaults)
+import Advent.Utils (readAsSet)
 import Data.List (delete)
 import qualified Data.Set as S
-import Utils (readAsSet)
 
 type CoordN = [Int]
 

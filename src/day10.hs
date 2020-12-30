@@ -1,7 +1,7 @@
 import AdventAPI
+import Advent.Utils (count)
 import Data.List (sort)
 import Data.List.Split (splitOn)
-import Utils (count)
 
 -- | Create a list of the differences between each element in plugs,
 -- ex: [1,2,4,7] -> [1,1,2,3,3]. The first and last elements are the

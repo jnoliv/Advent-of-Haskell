@@ -46,7 +46,7 @@ weightAllPaths adj current = 1 + sum (map edgeWeight $ adj !! current)
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 7
+    contents <- readInputDefaults 2020 7
 
     let (colorMap, adj) = parseInput contents
         reachableFrom   = map (reachable adj Set.empty . map fst) adj

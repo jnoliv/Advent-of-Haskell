@@ -12,7 +12,7 @@ solve answers f zero = sum . map (Set.size . foldr foldFunc zero) $ answers
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 6
+    contents <- readInputDefaults 2020 6
 
     let groups = map words . splitOn "\n\n" $ contents
     mapM_ print $ zipWith (solve groups) [Set.union, Set.intersection] [Set.empty, Set.fromList ['a'..'z']]

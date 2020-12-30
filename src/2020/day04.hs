@@ -83,7 +83,7 @@ parsePassport = foldr (foldFunc . splitOn ":") defaultPassport
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 4
+    contents <- readInputDefaults 2020 4
 
     let passports = parseInput contents
 

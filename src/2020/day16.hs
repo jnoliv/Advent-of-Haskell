@@ -61,7 +61,7 @@ greedy (rule:rules) = (choice, snd rule) : (greedy . map (first (delete choice))
 
 main :: IO()
 main = do
-    (rules, ownTicket, tickets) <- parseWrapper format <$> AdventAPI.readInputDefaults 16
+    (rules, ownTicket, tickets) <- parseWrapper format <$> readInputDefaults 2020 16
 
     let validTickets = filter (fst . checkTicket rules) tickets
         validRules   = map (findValidRules $ zip rules [0..]) $ transpose validTickets

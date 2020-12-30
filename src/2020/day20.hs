@@ -158,7 +158,7 @@ parseTile tile = (tid, tileMap)
 
 main :: IO()
 main = do
-    input <- readInputDefaults 20
+    input <- readInputDefaults 2020 20
 
     let rawTiles  = parseInput input
         tileSize  = round . sqrt . fromIntegral . M.size . snd . head $ rawTiles

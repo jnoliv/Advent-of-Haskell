@@ -31,7 +31,7 @@ evaluate (Exp e1 '*' e2) = evaluate e1 * evaluate e2
 
 main :: IO()
 main = do
-    input <- AdventAPI.readInputDefaults 18
+    input <- readInputDefaults 2020 18
     
     let go p = print . sum . map evaluate . parseLines p $ input
     mapM_ go [expression, expression']

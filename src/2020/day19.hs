@@ -73,7 +73,7 @@ match ruleMap ruleId = do
 
 main :: IO()
 main = do
-    input <- readInputDefaults 19
+    input <- readInputDefaults 2020 19
     let (rules, messages) = parseWrapper format input
         ruleMap           = M.fromList rules
         ruleMap2          = M.insert 8 (Rule [[42], [42,8]]) . M.insert 11 (Rule [[42,11,31], [42,31]]) $ ruleMap

@@ -19,7 +19,7 @@ play (Game turn last mem) = Game (succ turn) a mem'
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 15
+    contents <- readInputDefaults 2020 15
 
     let startNums = map read . splitOn "," $ contents
         mem       = M.fromList . zip startNums $ zip [0..] [0..]

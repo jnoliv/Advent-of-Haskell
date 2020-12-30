@@ -24,7 +24,7 @@ isValid2 ((p1, p2), c, pass) = (c1 == c) `xor` (c2 == c)
 
 main :: IO ()
 main = do
-    input <- readParsedLines 2 passwordFormat
+    input <- readParsedLines 2020 2 passwordFormat
 
     let input2 = map (\((p1, p2), c, p) -> ((pred p1, pred p2), c, p)) input
 

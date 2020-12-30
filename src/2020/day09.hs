@@ -35,7 +35,7 @@ findWeakness' xmas invalid (l, r, acc)
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 9
+    contents <- readInputDefaults 2020 9
 
     let xmas     = map read . lines $ contents
         invalid  = findFstInvalid (V.fromList xmas) 25

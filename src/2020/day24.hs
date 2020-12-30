@@ -56,7 +56,7 @@ flipAll set = keep `Set.union` new
 
 main :: IO()
 main = do
-    instructions <- readParsedLines 24 format
+    instructions <- readParsedLines 2020 24 format
 
     let tiles    = foldl identify Set.empty instructions
         tiles100 = iterate flipAll tiles !! 100

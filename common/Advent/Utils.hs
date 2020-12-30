@@ -80,9 +80,9 @@ type Parser a = Parsec Void String a
 
 -- | Read the input of the given day and apply the given
 -- parser to all lines of said input
-readParsedLines :: Int -> Parser a -> IO [a]
-readParsedLines day parser = do
-    input <- readInputDefaults day
+readParsedLines :: Int -> Int -> Parser a -> IO [a]
+readParsedLines year day parser = do
+    input <- readInputDefaults year day
     return $ parseLines parser input
 
 -- | Apply the given parser to all lines of said input

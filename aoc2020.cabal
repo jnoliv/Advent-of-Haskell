@@ -1,189 +1,143 @@
+cabal-version:       2.4
+build-type:          Simple
+
 name:                aoc2020
 version:             0.1.0.0
 synopsis:            Advent of Code 2020 Solutions
 description:         Haskell solutions to Advent of Code 2020, check it out at
                      <https://adventofcode.com>
+
 license:             ISC
 license-file:        LICENSE
 author:              João Nuno Oliveira
 maintainer:          joaonunoao@gmail.com
 copyright:           2020 João Nuno Oliveira
 homepage:            https://github.com/jnoliv/AOC20
-build-type:          Simple
 extra-source-files:  README.md
-cabal-version:       >=1.2
+
+common day
+  default-language:  Haskell2010
+  hs-source-dirs:    src/2020
+
+  build-depends:     base, advent
 
 executable day01
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day01.hs
-  
-  build-depends:       base, advent
+  import:            day
+  main-is:           day01.hs
 
 executable day02
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day02.hs
-  
-  build-depends:       base, advent, megaparsec
+  import:            day
+  main-is:           day02.hs
+  build-depends:     megaparsec
 
 executable day03
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day03.hs
-  
-  build-depends:       base, advent, containers
+  import:            day
+  main-is:           day03.hs
+  build-depends:     containers
 
 executable day04
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day04.hs
-  
-  build-depends:       base, advent, split
+  import:            day
+  main-is:           day04.hs
+  build-depends:     split
 
 executable day05
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day05.hs
-  
-  build-depends:       base, advent
+  import:            day
+  main-is:           day05.hs
 
 executable day06
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day06.hs
-  
-  build-depends:       base, advent, split, containers
+  import:            day
+  main-is:           day06.hs
+  build-depends:     split, containers
 
 executable day07
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day07.hs
-  
-  build-depends:       base, advent, split, containers
+  import:            day
+  main-is:           day07.hs
+  build-depends:     split, containers
 
 executable day08
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day08.hs
-  
-  build-depends:       base, advent, containers, vector
+  import:            day
+  main-is:           day08.hs
+  build-depends:     containers, vector
 
 executable day09
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day09.hs
-  
-  build-depends:       base, advent, vector
+  import:            day
+  main-is:           day09.hs
+  build-depends:     vector
 
 executable day10
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day10.hs
-  
-  build-depends:       base, advent, split
+  import:            day
+  main-is:           day10.hs
+  build-depends:     split
 
 executable day11
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day11.hs
-  
-  build-depends:       base, advent, containers
+  import:            day
+  main-is:           day11.hs
+  build-depends:     containers
 
 executable day12
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day12.hs
-  
-  build-depends:       base, advent
+  import:            day
+  main-is:           day12.hs
 
 executable day13
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day13.hs
-  
-  build-depends:       base, advent, split
+  import:            day
+  main-is:           day13.hs
+  build-depends:     split
 
 executable day14
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day14.hs
-  
-  build-depends:       base, advent, containers, megaparsec
+  import:            day
+  main-is:           day14.hs
+  build-depends:     containers, megaparsec
 
 executable day15
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day15.hs
-  
-  build-depends:       base, advent, containers, split
+  import:            day
+  main-is:           day15.hs
+  build-depends:     containers, split
 
 executable day16
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day16.hs
-  
-  build-depends:       base, advent, megaparsec
+  import:            day
+  main-is:           day16.hs
+  build-depends:     megaparsec
 
 executable day17
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day17.hs
-  
-  build-depends:       base, advent, containers
+  import:            day
+  main-is:           day17.hs
+  build-depends:     containers
 
 executable day18
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day18.hs
-  
-  build-depends:       base, advent, megaparsec
+  import:            day
+  main-is:           day18.hs
+  build-depends:     megaparsec
 
 executable day19
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day19.hs
-  
-  build-depends:       base, advent, containers, megaparsec, mtl
+  import:            day
+  main-is:           day19.hs
+  build-depends:     containers, megaparsec, mtl
 
 executable day20
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day20.hs
-  
-  build-depends:       base, advent, split, containers
+  import:            day
+  main-is:           day20.hs
+  build-depends:     split, containers
 
 executable day21
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day21.hs
-  
-  build-depends:       base, advent, containers, megaparsec
+  import:            day
+  main-is:           day21.hs
+  build-depends:     containers, megaparsec
 
 executable day22
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day22.hs
-  
-  build-depends:       base, advent, containers, megaparsec
+  import:            day
+  main-is:           day22.hs
+  build-depends:     containers, megaparsec
 
 executable day23
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day23.hs
-  
-  build-depends:       base, advent, vector
+  import:            day
+  main-is:           day23.hs
+  build-depends:     vector
 
 executable day24
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day24.hs
-  
-  build-depends:       base, advent, containers, megaparsec
+  import:            day
+  main-is:           day24.hs
+  build-depends:     containers, megaparsec
 
 executable day25
-  default-language:    Haskell2010
-  hs-source-dirs:      src
-  main-is:             day25.hs
-  
-  build-depends:       base, advent
+  import:            day
+  main-is:           day25.hs

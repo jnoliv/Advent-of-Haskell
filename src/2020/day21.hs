@@ -31,7 +31,7 @@ mapAlgsToIngs = foldAlgs . sortByNIngs .  map (second S.toList) . M.toList
 
 main :: IO()
 main = do
-    input <- readParsedLines 21 format
+    input <- readParsedLines 2020 21 format
 
     let algsPossibilities = mergeAlgsPossibilities input
         potencialAlgs     = M.foldr S.union S.empty algsPossibilities

@@ -59,7 +59,7 @@ applyMaskV2 mask val = map readBin . applyMaskV2' mask $ paddedBinVal
 
 main :: IO()
 main = do
-    insts <- readParsedLines 14 program
+    insts <- readParsedLines 2020 14 program
 
     let mem = execute insts M.empty (0,0)
         sum = M.foldl (+) 0 mem

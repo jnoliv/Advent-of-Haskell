@@ -20,7 +20,7 @@ step set = S.union new kept
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 17
+    contents <- readInputDefaults 2020 17
 
     let slice       = readAsSet (== '#') contents
 

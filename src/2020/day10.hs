@@ -28,7 +28,7 @@ numArrangements = product . map (nArrange . pred . length) . filter ((> 1) . len
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 10
+    contents <- readInputDefaults 2020 10
 
     let plugs            = sort . map read . lines $ contents :: [Int]
         (prod1x3, diffs) = joltDiff1x3 plugs

@@ -15,7 +15,7 @@ findSeat _ = error "No free seat exists"
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 5
+    contents <- readInputDefaults 2020 5
 
     let seats = sort . map (binToDec . map bspToBit) . lines $ contents
 

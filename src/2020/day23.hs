@@ -59,7 +59,7 @@ order n cups idx = do
 
 main :: IO()
 main = do
-    cups <- map digitToInt . init <$> readInputDefaults 23
+    cups <- map digitToInt . init <$> readInputDefaults 2020 23
 
     let maxIdx = length cups
 

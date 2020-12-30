@@ -10,7 +10,7 @@ loop n sn = iterate ((`mod` 20201227) . (* sn)) 1 !! n
 
 main :: IO()
 main = do
-    [pubk1, pubk2] <- map read . lines <$> readInputDefaults 25
+    [pubk1, pubk2] <- map read . lines <$> readInputDefaults 2020 25
 
     let loopSize1 = findLoopSize 7 pubk1
         --loopSize2 = findLoopSize 7 pubk2

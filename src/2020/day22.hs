@@ -48,7 +48,7 @@ recursiveScore (Win2 d) = score d
 
 main :: IO()
 main = do
-    gameStart <- parseWrapper format <$> readInputDefaults 22
+    gameStart <- parseWrapper format <$> readInputDefaults 2020 22
 
     print . score . combat $ gameStart
     print . recursiveScore . recursiveCombat $ Ongoing gameStart Set.empty 

@@ -69,7 +69,7 @@ parseInstructions input = map (\s -> (head s, read $ tail s)) $ lines input
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 12
+    contents <- readInputDefaults 2020 12
 
     let instructions  = parseInstructions contents
         finalPos1     = navigateShip E (0,0) instructions

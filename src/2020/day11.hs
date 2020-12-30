@@ -50,7 +50,7 @@ countTaken = M.foldr (\s a -> if s == Taken then a+1 else a) 0
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 11
+    contents <- readInputDefaults 2020 11
 
     let size  = (,) <$> length <*> length . head $ lines contents
         seats = readAsMap charToSeat contents

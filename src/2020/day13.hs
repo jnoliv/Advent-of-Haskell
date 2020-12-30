@@ -23,7 +23,7 @@ parseInput input = (t, ids)
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 13
+    contents <- readInputDefaults 2020 13
 
     let (t, ids) = parseInput contents
         depart   = findEarliestDeparture t $ map fst ids

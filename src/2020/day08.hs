@@ -39,7 +39,7 @@ tryRestoreRun program adr
 
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 8
+    contents <- readInputDefaults 2020 8
 
     let program = Vector.fromList . map parseOp $ lines contents
         result1 = executeUntilLoop program Set.empty 0 0

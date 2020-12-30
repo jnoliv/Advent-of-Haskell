@@ -1,13 +1,12 @@
 {-# Language OverloadedStrings #-}
 
+import Advent.Life
 import Advent.Megaparsec
-import Advent.Utils (count)
 import qualified Data.Set as Set
 
 type AxialCoord  = (Int,Int)
 type Tiles       = Set.Set AxialCoord
 data Instruction = E | SE | SW | W | NW | NE
-
 
 format :: Parser [Instruction]
 format = manyTill instruction (lookAhead "\n")
@@ -37,27 +36,16 @@ identify tiles instructions
 neighbours :: AxialCoord -> [AxialCoord]
 neighbours coord = map (move coord) [E, SE, SW, W, NW, NE]
 
-countBlackNeighbours :: Tiles -> AxialCoord -> Int
-countBlackNeighbours tiles = count (`Set.member` tiles) . neighbours
-
-keepBlack :: Int -> Bool
-keepBlack n = n == 1 || n == 2
-
-whiteNeighbours :: Tiles -> Tiles
-whiteNeighbours set = Set.filter (`Set.notMember` set) allNeighs
-    where allNeighs = Set.fromList . concatMap neighbours . Set.toList $ set
-
-flipAll :: Tiles -> Tiles
-flipAll set = keep `Set.union` new
-    where keep = Set.filter (keepBlack . countBlackNeighbours set) set
-          new  = Set.filter ((==2) . countBlackNeighbours set) (whiteNeighbours set)
+rules :: Bool -> Int -> Bool
+rules True  n = n == 1 || n == 2
+rules False n = n == 2
 
 main :: IO()
 main = do
     instructions <- readParsedLines 2020 24 format
 
     let tiles    = foldl identify Set.empty instructions
-        tiles100 = iterate flipAll tiles !! 100
+        tiles100 = iterate (evolve neighbours rules) tiles !! 100
 
-    print . Set.size $ tiles
-    print . Set.size $ tiles100
+    print . countAlive $ tiles
+    print . countAlive $ tiles100

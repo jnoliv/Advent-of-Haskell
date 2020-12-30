@@ -1,7 +1,7 @@
-name:                advent
+name:                aoc2020
 version:             0.1.0.0
-synopsis:            Advent of Code Solutions
-description:         Solutions to Advent of Code, check it out at
+synopsis:            Advent of Code 2020 Solutions
+description:         Haskell solutions to Advent of Code 2020, check it out at
                      <https://adventofcode.com>
 license:             ISC
 license-file:        LICENSE
@@ -11,26 +11,7 @@ copyright:           2020 João Nuno Oliveira
 homepage:            https://github.com/jnoliv/AOC20
 build-type:          Simple
 extra-source-files:  README.md
-cabal-version:       >=1.10
-
-library
-  default-language:    Haskell2010
-  hs-source-dirs:      Common
-
-  exposed-modules:
-    AdventAPI
-    Math
-    Utils
-  
-  build-depends:
-    base,
-    req,
-    directory,
-    filepath,
-    text,
-    bytestring,
-    containers,
-    megaparsec
+cabal-version:       >=1.2
 
 executable day01
   default-language:    Haskell2010

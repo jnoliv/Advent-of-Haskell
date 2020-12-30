@@ -1,0 +1,28 @@
+name:                advent
+version:             0.1.0.0
+synopsis:            Utilities library for Advent of Code solutions
+license:             ISC
+author:              João Nuno Oliveira
+maintainer:          joaonunoao@gmail.com
+copyright:           2020 João Nuno Oliveira
+homepage:            https://github.com/jnoliv/AOC20
+build-type:          Simple
+cabal-version:       >=1.2
+
+library
+  default-language:    Haskell2010
+
+  exposed-modules:
+    AdventAPI
+    Math
+    Utils
+  
+  build-depends:
+    base,
+    req,
+    directory,
+    filepath,
+    text,
+    bytestring,
+    containers,
+    megaparsec

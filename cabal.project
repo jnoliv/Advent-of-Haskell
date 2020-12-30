@@ -1,0 +1,4 @@
+packages:
+	common/advent.cabal
+
+	aoc2020.cabal

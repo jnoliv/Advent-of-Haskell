@@ -2,26 +2,12 @@
 
 This repository contains Haskell programs to solve Advent of Code puzzles.
 
-## How to Run
+## Building and Running
 
-I use cabal to setup everything, so just run
-
-```
-cabal build
-```
-
-Or alternatively, run
+This project uses cabal as the build system, so just run
 
 ```
-cabal build day##
+cabal v2-run day##
 ```
 
-where `##` is the day number, left padded with zeroes to two digits.
-
-After building, run
-
-```
-cabal run day##
-```
-
-and voilá!
+where `##` is the day number, left padded with zeroes to two digits, and voilá!

@@ -1,62 +1,53 @@
 import AdventAPI
-import Advent.Utils (readAsMap, count)
+import Advent.Utils (readAsSet, count)
 import Data.Maybe (mapMaybe)
-import qualified Data.Map as M
+import Data.Set (Set)
+import qualified Data.Set as S
 
-data Seat = Taken | Empty | Floor
-    deriving (Show, Eq)
+type SeatP = (Int,Int)
 
-type SeatMap = M.Map (Int,Int) Seat
+addCoord :: SeatP -> SeatP -> SeatP
+addCoord (y,x) (y',x') = (y + y', x + x')
 
-type MakeNeigh = SeatMap -> (Int,Int) -> (Int,Int) -> (Int,Int) -> Maybe (Int,Int)
+potentialNeighbours :: [SeatP]
+potentialNeighbours = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
--- | Convert an input character to a Maybe Seat
-charToSeat :: Char -> Maybe Seat
-charToSeat '#' = Just Taken
-charToSeat 'L' = Just Empty
-charToSeat  _ = Nothing
+countAdjacentTakenSeats :: Set SeatP -> SeatP -> Int
+countAdjacentTakenSeats taken p = count ((`S.member` taken) . addCoord p) potentialNeighbours
 
--- | Apply the given rules to the given celular automaton until it stabilizes
-stabilize :: (SeatMap -> Bool -> (Int, Int) -> Seat -> (Bool, Seat)) -> SeatMap -> SeatMap
-stabilize rules seats = snd $ until (not . fst) stabilize' (True, seats)
-    where stabilize' (_,seats') = M.mapAccumWithKey (rules seats') False seats'
+countVisibleTakenSeats :: Set SeatP -> (Int,Int) -> Set SeatP -> SeatP -> Int
+countVisibleTakenSeats seats (ySize,xSize) taken p = length $ mapMaybe (visibleTakenSeats p) potentialNeighbours
+    where visibleTakenSeats (y,x) d
+            | y < 0 || ySize <= y    = Nothing
+            | x < 0 || xSize <= x    = Nothing
+            | p' `S.notMember` seats = visibleTakenSeats p' d
+            | p' `S.member` taken    = Just p'
+            | otherwise              = Nothing
+            where p' = addCoord (y,x) d
 
--- Apply the rules to the given position
-applyRules :: Int -> MakeNeigh -> (Int,Int) -> SeatMap -> Bool -> (Int,Int) -> Seat -> (Bool,Seat)
-applyRules tolerance f size seats acc pos s =
-    case s of
-        Taken -> if nAdj >= tolerance then (True, Empty) else (acc, s)
-        Empty -> if nAdj == 0         then (True, Taken) else (acc, s)
-    where
-        allAdj = mapMaybe (f seats size pos) [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
-        nAdj   = count id . map ((==Taken) . flip (M.findWithDefault Empty) seats) $ allAdj
+rules :: Int -> Bool -> Int -> Bool
+rules tolerance True  n = n < tolerance
+rules _         False n = n == 0
 
--- | Immediately adjacent seats
-adjacentSeat :: MakeNeigh
-adjacentSeat _ _ (x,y) (dx,dy) = Just (x + dx, y + dy)
+evolve :: Ord a => Set a -> (Set a -> a -> Int) -> (Bool -> Int -> Bool) -> Set a -> Set a
+evolve grid countLiveNeighbours rules alive = S.filter filterF grid
+    where filterF p = rules (p `S.member` alive) (countLiveNeighbours alive p)
 
--- | Line of sight seats
-visibleSeat :: MakeNeigh
-visibleSeat seats size@(xSize,ySize) (x,y) d@(dx,dy)
-    | x < 0 || xSize <= x                      = Nothing
-    | y < 0 || ySize <= y                      = Nothing
-    | M.findWithDefault Floor p seats /= Floor = Just p
-    | otherwise                                = visibleSeat seats size p d
-    where p = (x + dx, y + dy)
-
--- | Count the number of taken seats
-countTaken :: SeatMap -> Int
-countTaken = M.foldr (\s a -> if s == Taken then a+1 else a) 0
+stabilize :: Ord a => (Set a -> Set a) -> Set a -> Set a
+stabilize evolve initial = stabilize' initial (evolve initial)
+    where stabilize' st0 st1
+            | st0 == st1 = st0
+            | otherwise  = stabilize' st1 (evolve st1)
 
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 11
 
     let size  = (,) <$> length <*> length . head $ lines contents
-        seats = readAsMap charToSeat contents
+        seats = readAsSet (== 'L') contents
 
-        stable1 = stabilize (applyRules 4 adjacentSeat size) seats
-        stable2 = stabilize (applyRules 5 visibleSeat  size) seats
+        stable1 = stabilize (evolve seats countAdjacentTakenSeats             (rules 4)) seats
+        stable2 = stabilize (evolve seats (countVisibleTakenSeats seats size) (rules 5)) seats
 
-    print $ countTaken stable1
-    print $ countTaken stable2
+    print . S.size $ stable1
+    print . S.size $ stable2

@@ -68,6 +68,10 @@ match ruleMap ruleId = do
                 else put (map tail matches) >> return True
         Rule subrules -> matchRule ruleMap subrules
 
+-- |
+-- >>> :main
+-- 291
+-- 409
 main :: IO()
 main = do
     input <- readInputDefaults 2020 19

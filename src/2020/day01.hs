@@ -14,6 +14,10 @@ findTriplet sum (x:xs) =
         Just (y,z) -> Just (x,y,z)
         Nothing    -> findTriplet sum xs
 
+-- |
+-- >>> :main
+-- 731731
+-- 116115990
 main :: IO()
 main = do
     contents <- AdventAPI.readInputDefaults 2020 1

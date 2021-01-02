@@ -55,6 +55,10 @@ applyMaskV2 mask val = map readBin . applyMaskV2' mask $ paddedBinVal
                           'X' -> ['0','1']
                   <*> applyMaskV2' ms vs
 
+-- |
+-- >>> :main
+-- 11612740949946
+-- 3394509207186
 main :: IO()
 main = do
     insts <- readParsedLines 2020 14 program

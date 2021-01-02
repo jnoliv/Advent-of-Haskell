@@ -67,6 +67,10 @@ rotateWaypoint (x,y) (d,n)
 parseInstructions :: String -> [(Char,Int)]
 parseInstructions input = map (\s -> (head s, read $ tail s)) $ lines input
 
+-- |
+-- >>> :main
+-- 590
+-- 42013
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 12

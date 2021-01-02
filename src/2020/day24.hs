@@ -40,6 +40,10 @@ rules :: Bool -> Int -> Bool
 rules True  n = n == 1 || n == 2
 rules False n = n == 2
 
+-- |
+-- >>> :main
+-- 394
+-- 4036
 main :: IO()
 main = do
     instructions <- readParsedLines 2020 24 format

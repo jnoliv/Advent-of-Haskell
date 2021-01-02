@@ -44,6 +44,10 @@ recursiveScore :: RecGame -> Int
 recursiveScore (Win1 d) = score d
 recursiveScore (Win2 d) = score d
 
+-- |
+-- >>> :main
+-- 34324
+-- 33259
 main :: IO()
 main = do
     gameStart <- parseWrapper format <$> readInputDefaults 2020 22

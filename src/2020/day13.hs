@@ -21,6 +21,10 @@ parseInput input = (t, ids)
           t   = read . head $ ls
           ids = map ((,) <$> read . fst <*> snd) . filter ((/=) "x" . fst) . (`zip` [0..]) . splitOn "," . (!! 1) $ ls
 
+-- |
+-- >>> :main
+-- 6559
+-- 626670513163231
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 13

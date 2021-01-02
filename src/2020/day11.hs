@@ -39,6 +39,10 @@ stabilize evolve initial = stabilize' initial (evolve initial)
             | st0 == st1 = st0
             | otherwise  = stabilize' st1 (evolve st1)
 
+-- |
+-- >>> :main
+-- 2113
+-- 1865
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 11

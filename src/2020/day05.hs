@@ -13,6 +13,10 @@ findSeat :: [Int] -> Int
 findSeat (n:m:ss) = if n == pred m then findSeat (m:ss) else succ n
 findSeat _ = error "No free seat exists"
 
+-- |
+-- >>> :main
+-- 892
+-- 625
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 5

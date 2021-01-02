@@ -36,6 +36,10 @@ countTrees bAreaMap@(nRows,_,_) (hStep, vStep) =
     let positions = zip [0,vStep..nRows] [0,hStep..]
     in length . filter (hasTree bAreaMap) $ positions
 
+-- |
+-- >>> :main
+-- 156
+-- 3521829480
 main :: IO()
 main = do
     contents <- AdventAPI.readInputDefaults 2020 3

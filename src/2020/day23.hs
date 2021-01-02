@@ -57,6 +57,10 @@ order n cups idx = do
     cup <- VM.read cups idx
     (cup :) <$> order (pred n) cups cup
 
+-- |
+-- >>> :main
+-- 32897654
+-- 186715244496
 main :: IO()
 main = do
     cups <- map digitToInt . init <$> readInputDefaults 2020 23

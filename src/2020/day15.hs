@@ -3,7 +3,7 @@ import qualified Data.IntMap as M
 import Data.List.Split (splitOn)
 
 type Mem  = M.IntMap (Int,Int)   -- (last said, previous last said)
-data Game = Game { turn :: Int, prev :: Int, mem :: Mem}
+data Game = Game { turn :: !Int, prev :: !Int, mem :: !Mem}
 
 age :: Int -> Mem -> Int
 age n = uncurry (-) . M.findWithDefault (0,0) n
@@ -17,6 +17,10 @@ play (Game turn last mem) = Game (succ turn) a mem'
     where a    = age last mem
           mem' = say a turn mem
 
+-- |
+-- >>> :main
+-- 1618
+-- 548531
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 15

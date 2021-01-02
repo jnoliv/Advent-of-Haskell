@@ -27,6 +27,10 @@ mapAlgsToIngs = foldAlgs . sortByNIngs .  map (second S.toList) . M.toList
           foldAlgs [] = []
           foldAlgs ((a,[i]) : algs) = (a,i) : (foldAlgs . sortByNIngs . map (second (delete i)) $ algs)
 
+-- |
+-- >>> :main
+-- 2162
+-- lmzg,cxk,bsqh,bdvmx,cpbzbx,drbm,cfnt,kqprv
 main :: IO()
 main = do
     input <- readParsedLines 2020 21 format

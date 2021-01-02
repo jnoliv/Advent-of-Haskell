@@ -10,6 +10,10 @@ solve :: [[String]] -> (AG -> AG -> AG) -> AG -> Int
 solve answers f zero = sum . map (Set.size . foldr foldFunc zero) $ answers
     where foldFunc x set = f set $ Set.fromList x
 
+-- |
+-- >>> :main
+-- 7027
+-- 3579
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 6

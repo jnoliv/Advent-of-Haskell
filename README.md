@@ -11,12 +11,51 @@ This repository contains Haskell programs to solve Advent of Code puzzles. It is
 | 2016 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2015 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
-## Building and Running
+## Setup
 
-This project uses cabal as the build system, so just run
+This project uses `GHC` 8.10.3 and `cabal-install` 3.2.0.0, which can easily be installed using [ghcup](https://www.haskell.org/ghcup/):
 
 ```
-cabal v2-run day##
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
+ghcup install ghc 8.10.3
+ghcup set ghc 8.10.3
+
+ghcup install cabal 3.2.0.0
+ghcup set cabal 3.2.0.0
+
 ```
 
-where `##` is the day number, left padded with zeroes to two digits, and voilá!
+For any extra information on `ghcup`, you can check its [gitlab page](https://gitlab.haskell.org/haskell/ghcup-hs#usage).
+
+## Building & Running
+
+To build the entire project
+
+```
+cabal build all
+```
+
+If you prefer to simply build a single executable, you can do so
+
+```
+cabal build day##
+```
+
+where `##` is the day number, left padded with zeroes to two digits.
+
+To run the solution to a given day, just do
+
+```
+cabal run day##
+```
+
+Note that you can omit the build steps and simply do `cabal run`, as it will build whatever necessary to run the requested executables.
+
+## Testing
+
+This project uses `doctest` to make sure the solutions are all correct. To run the tests do
+
+```
+cabal test
+```

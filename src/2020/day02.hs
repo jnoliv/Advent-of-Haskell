@@ -20,6 +20,10 @@ isValid2 ((p1, p2), c, pass) = (c1 == c) `xor` (c2 == c)
     where c1 = pass !! p1
           c2 = pass !! p2
 
+-- |
+-- >>> :main
+-- 550
+-- 634
 main :: IO ()
 main = do
     input <- readParsedLines 2020 2 passwordFormat

@@ -13,6 +13,10 @@ rules :: Bool -> Int -> Bool
 rules True  n = n == 2 || n == 3
 rules False n = n == 3
 
+-- |
+-- >>> :main
+-- 257
+-- 2532
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 17

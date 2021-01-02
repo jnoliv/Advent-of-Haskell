@@ -37,6 +37,10 @@ tryRestoreRun program adr
               program'              = program Vector.// [(adr, uncorrupt $ program Vector.! adr)]
               (success, result)     = executeUntilLoop program' Set.empty 0 0
 
+-- |
+-- >>> :main
+-- 1949
+-- 2092
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 8

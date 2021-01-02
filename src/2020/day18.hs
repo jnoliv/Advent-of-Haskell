@@ -25,6 +25,10 @@ evaluate (Term n) = n
 evaluate (Exp e1 '+' e2) = evaluate e1 + evaluate e2
 evaluate (Exp e1 '*' e2) = evaluate e1 * evaluate e2
 
+-- |
+-- >>> :main
+-- 3647606140187
+-- 323802071857594
 main :: IO()
 main = do
     input <- readInputDefaults 2020 18

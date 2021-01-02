@@ -33,6 +33,10 @@ findWeakness' xmas invalid (l, r, acc)
     | acc <  invalid         = findWeakness' xmas invalid (l, r + 1, acc + xmas V.! (r + 1))
     | acc >  invalid         = findWeakness' xmas invalid (l + 1, l + 2, xmas V.! (l + 1) + xmas V.! (l + 2))
 
+-- |
+-- >>> :main
+-- 31161678
+-- 5453868
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 9

@@ -156,6 +156,10 @@ parseTile tile = (tid, tileMap)
     where tid     = read . take 4 . drop 5 $ tile
           tileMap = readAsMap (\c -> if c == '#' then Just 1 else Just 0) $ drop 11 tile
 
+-- |
+-- >>> :main
+-- 8581320593371
+-- 2031
 main :: IO()
 main = do
     input <- readInputDefaults 2020 20

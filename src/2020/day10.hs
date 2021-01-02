@@ -26,6 +26,10 @@ numArrangements :: [Int] -> Int
 numArrangements = product . map (nArrange . pred . length) . filter ((> 1) . length) . splitOn [3]
     where nArrange l = if l == 3 then pred $ 2 ^ l else 2 ^l
 
+-- |
+-- >>> :main
+-- 1890
+-- 49607173328384
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 10

@@ -81,6 +81,10 @@ parsePassport = foldr (foldFunc . splitOn ":") defaultPassport
     where foldFunc [field,value] p = addField p (field,value)
           foldFunc _ p = p
 
+-- |
+-- >>> :main
+-- 264
+-- 224
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 4

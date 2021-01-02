@@ -55,6 +55,10 @@ greedy []           = []
 greedy (rule:rules) = (choice, snd rule) : (greedy . map (first (delete choice)) $ rules)
     where choice = head . fst $ rule
 
+-- |
+-- >>> :main
+-- 27850
+-- 491924517533
 main :: IO()
 main = do
     (rules, ownTicket, tickets) <- parseWrapper format <$> readInputDefaults 2020 16

@@ -44,6 +44,10 @@ weightAllPaths :: AdjList -> Int -> Int
 weightAllPaths adj current = 1 + sum (map edgeWeight $ adj !! current)
     where edgeWeight (n,w) = w * weightAllPaths adj n
 
+-- |
+-- >>> :main
+-- 226
+-- 9569
 main :: IO()
 main = do
     contents <- readInputDefaults 2020 7

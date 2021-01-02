@@ -1,0 +1,22 @@
+cabal-version:       3.0
+build-type:          Simple
+
+name:                aoc
+version:             0.1.0.0
+synopsis:            Advent of Code Solutions
+description:         Haskell solutions to Advent of Code, check it out at
+                     <https://adventofcode.com>
+
+license:             ISC
+license-file:        LICENSE
+author:              João Nuno Oliveira
+maintainer:          joaonunoao@gmail.com
+copyright:           2020 João Nuno Oliveira
+homepage:            https://github.com/jnoliv/AOC20
+extra-source-files:  README.md
+
+test-suite doctests
+  type:              exitcode-stdio-1.0
+  ghc-options:       -threaded
+  main-is:           doctests.hs
+  build-depends:     base, directory, filepath, doctest >= 0.8

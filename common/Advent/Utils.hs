@@ -1,10 +1,13 @@
+{-# Language BlockArguments #-}
+
 module Advent.Utils (
     count, xor,
     sinsert, replace, findSumPair,
-    binToDec, readBin, showBin,
+    readBin, showBin,
     readAsMap, showMap, readAsSet
 ) where
 
+import Control.Monad (guard)
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
 import Data.List (intercalate)
@@ -58,10 +61,6 @@ findSumPair' sum l r list
 
 ---- Parsing and printing
 
--- | Convert a list of bits to a decimal number
-binToDec :: Integral a => [a] -> a
-binToDec = foldl (\acc bit -> 2*acc + bit) 0
-
 -- | Read a binary number
 readBin :: String -> Int
 readBin = fst . head . readInt 2 (`elem` "01") digitToInt
@@ -77,10 +76,11 @@ indexGrid2D = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
 -- from char to the map value, wrapped in Maybe to allow ommiting
 -- positions from the resulting map.
 readAsMap :: (Char -> Maybe a) -> String -> Map.Map (Int, Int) a
-readAsMap f input = Map.fromList . catMaybes . concatMap (map maybeT) $ zipWith zip indexGrid2D ls
-    where ls = map (map f) . lines $ input
-          maybeT (x, Just y)  = Just (x,y)
-          maybeT (_, Nothing) = Nothing
+readAsMap f input = Map.fromList do
+    (r, line)  <- zip [0..] (lines input)
+    (c, char)  <- zip [0..] line
+    Just value <- [f char]
+    return ((r,c), value)
 
 -- | Show a rectangular map using 'f' to convert elements to
 -- characters and 'def' as the default value in the map
@@ -97,5 +97,8 @@ showMap f def m = intercalate "\n" $ map (map (f . findWithDefault)) indexes
 -- which characters should be included in the set (or their positions,
 -- rather).
 readAsSet :: (Char -> Bool) -> String -> Set.Set (Int,Int)
-readAsSet f input = Set.fromList . map fst . filter snd . concat $ zipWith zip indexGrid2D ls
-    where ls = map (map f) . lines $ input
+readAsSet f input = Set.fromList do
+    (r, line) <- zip [0..] (lines input)
+    (c, char) <- zip [0..] line
+    guard (f char)
+    return (r,c)

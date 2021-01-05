@@ -2,7 +2,8 @@
 
 import AdventAPI (readInputDefaults)
 import Advent.Coord.Grid
-import Advent.Utils (readAsMap, binToDec, readBin, showBin, count)
+import Advent.Utils (readAsMap, readBin, showBin, count)
+import Data.Char (intToDigit)
 import Data.Bifunctor (first, second)
 import Data.Function (on)
 import Data.List (intersect, sortOn, notElem)
@@ -22,7 +23,7 @@ type TileMap = M.Map Coord Tile
 -- Border operations
 
 border :: (Coord -> Int -> Bool) -> ImageData -> Int
-border f = binToDec . map snd . M.toAscList . M.filterWithKey f
+border f = readBin . map (intToDigit . snd) . M.toAscList . M.filterWithKey f
 
 topBorder, bottomBorder, leftBorder, rightBorder :: Int -> ImageData -> Int
 topBorder    _    = border (\k _ -> fst k == 0) 

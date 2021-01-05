@@ -1,12 +1,12 @@
 import AdventAPI
-import Advent.Utils (binToDec)
+import Advent.Utils (readBin)
 import Data.List (sort)
 
 -- | Parse a character of the binary space partioning into a bit
-bspToBit :: Char -> Int
+bspToBit :: Char -> Char
 bspToBit c
-    | c == 'F' || c == 'L' = 0
-    | c == 'B' || c == 'R' = 1
+    | c == 'F' || c == 'L' = '0'
+    | c == 'B' || c == 'R' = '1'
 
 -- | Find the gap in a sorted list of seats
 findSeat :: [Int] -> Int
@@ -21,7 +21,7 @@ main :: IO()
 main = do
     contents <- readInputDefaults 2020 5
 
-    let seats = sort . map (binToDec . map bspToBit) . lines $ contents
+    let seats = sort . map (readBin . map bspToBit) . lines $ contents
 
     print . maximum $ seats
     print . findSeat $ seats

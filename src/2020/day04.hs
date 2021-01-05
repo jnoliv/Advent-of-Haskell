@@ -1,4 +1,5 @@
 import AdventAPI
+import Advent.Utils (count)
 import Data.Char (isDigit)
 import Data.List.Split (splitOn)
 
@@ -62,10 +63,6 @@ isValidEyeColor = flip elem ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 
 isValidPassportID :: String -> Bool
 isValidPassportID str = length str == 9 && all isDigit str
-
--- | Count occurences in the given list that satisfy 'cond'
-count :: (a -> Bool) -> [a] -> Int
-count cond = length . filter cond
 
 -- | Check if character is hexadecimal digit
 isHex :: Char -> Bool

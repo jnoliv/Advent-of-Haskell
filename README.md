@@ -59,3 +59,12 @@ This project uses `doctest` to make sure the solutions are all correct. To run t
 ```
 cabal test
 ```
+
+## To do
+Extra things to do apart from completing missing puzzles:
+
+* Improvements on 2020:
+  * Day 07: would Data.Graph work?
+  * Day 14: it looks bad, can it be improved?
+  * Day 19: ReadP
+  * Day 25: better dicrete logarithm than brute force?

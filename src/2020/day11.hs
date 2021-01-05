@@ -1,29 +1,22 @@
 import AdventAPI
+import Advent.Coord.Grid
 import Advent.Utils (readAsSet, count)
 import Data.Maybe (mapMaybe)
 import Data.Set (Set)
 import qualified Data.Set as S
 
-type SeatP = (Int,Int)
+countAdjacentTakenSeats :: Set Coord -> Coord -> Int
+countAdjacentTakenSeats taken p = count (`S.member` taken) . neighbours8 $ p
 
-addCoord :: SeatP -> SeatP -> SeatP
-addCoord (y,x) (y',x') = (y + y', x + x')
-
-potentialNeighbours :: [SeatP]
-potentialNeighbours = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
-
-countAdjacentTakenSeats :: Set SeatP -> SeatP -> Int
-countAdjacentTakenSeats taken p = count ((`S.member` taken) . addCoord p) potentialNeighbours
-
-countVisibleTakenSeats :: Set SeatP -> (Int,Int) -> Set SeatP -> SeatP -> Int
-countVisibleTakenSeats seats (ySize,xSize) taken p = length $ mapMaybe (visibleTakenSeats p) potentialNeighbours
+countVisibleTakenSeats :: Set Coord -> (Int,Int) -> Set Coord -> Coord -> Int
+countVisibleTakenSeats seats (ySize,xSize) taken p = length . mapMaybe (visibleTakenSeats p) . neighbours8 $ (0,0)
     where visibleTakenSeats (y,x) d
             | y < 0 || ySize <= y    = Nothing
             | x < 0 || xSize <= x    = Nothing
             | p' `S.notMember` seats = visibleTakenSeats p' d
             | p' `S.member` taken    = Just p'
             | otherwise              = Nothing
-            where p' = addCoord (y,x) d
+            where p' = (y,x) .+ d
 
 rules :: Int -> Bool -> Int -> Bool
 rules tolerance True  n = n < tolerance

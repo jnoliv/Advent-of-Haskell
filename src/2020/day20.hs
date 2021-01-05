@@ -1,6 +1,7 @@
 {-# Language OverloadedStrings #-}
 
 import AdventAPI (readInputDefaults)
+import Advent.Coord.Grid
 import Advent.Utils (readAsMap, binToDec, readBin, showBin, count)
 import Data.Bifunctor (first, second)
 import Data.Function (on)
@@ -9,18 +10,18 @@ import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import Data.Maybe (mapMaybe, listToMaybe)
 
-type ImageData = M.Map (Int,Int) Int
+type ImageData = M.Map Coord Int
 
 data Tile = Tile { tileId :: Integer, image :: ImageData, neighbours :: [Integer] }
 
 instance Eq Tile where
   (==) = (==) `on` tileId
 
-type TileMap = M.Map (Int,Int) Tile
+type TileMap = M.Map Coord Tile
 
 -- Border operations
 
-border :: ((Int,Int) -> Int -> Bool) -> ImageData -> Int
+border :: (Coord -> Int -> Bool) -> ImageData -> Int
 border f = binToDec . map snd . M.toAscList . M.filterWithKey f
 
 topBorder, bottomBorder, leftBorder, rightBorder :: Int -> ImageData -> Int
@@ -40,20 +41,20 @@ normalize n b = min b $ invert n b
 borders :: Int -> ImageData -> [Int]
 borders n img = map (($ img) . ($ n)) [topBorder, rightBorder, bottomBorder, leftBorder]
 
-bordersWithCoords :: Int -> ImageData -> [(Int, (Int,Int))]
+bordersWithCoords :: Int -> ImageData -> [(Int, Coord)]
 bordersWithCoords n img = map (first (($ img) . ($ n)))
     [(topBorder, (-1,0)), (rightBorder, (0,1)), (bottomBorder, (1,0)), (leftBorder, (0,-1))]
 
 -- Tile transformations
 
 flipX :: Int -> ImageData -> ImageData
-flipX n = M.mapKeys (\(y,x) -> (y, n - x - 1))
+flipX n = M.mapKeys (\(r,c) -> (r, n - c - 1))
 
 flipY :: Int -> ImageData -> ImageData
-flipY n = M.mapKeys (\(y,x) -> (n - y - 1, x))
+flipY n = M.mapKeys (\(r,c) -> (n - r - 1, c))
 
 rotateR :: Int -> ImageData -> ImageData
-rotateR n = M.mapKeys (\(y,x) -> (x, n - y - 1))
+rotateR n = M.mapKeys (\(r,c) -> (c, n - r - 1))
 
 transformations :: Int -> ImageData -> [ImageData]
 transformations n img = map ($ img)
@@ -89,11 +90,10 @@ assemble n tiles decided
         decided'                    = fst $ M.mapAccumWithKey foldF decided decided
         foldF acc k v               = (addNeighbours acc k v, v)
         addNeighbours map' pos tile = M.union map' . M.fromList . mapMaybe (findNeighbour map' pos tile) $ bordersWithCoords n (image tile)
-        addCoord (y0,x0) (y1,x1)    = (y0 + y1, x0 + x1)
         getTile tid                 = head $ filter ((== tid) . tileId) tiles
 
         findNeighbour map' pos tile (bord, delta) =
-            let pos' = addCoord pos delta
+            let pos' = pos .+ delta
             in if pos' `M.member` map' then Nothing else matchNeighbour tile bord pos' delta
         
         matchNeighbour tile bord destP ( 0,  1) = matchNeighbour' tile bord destP (  leftBorder n)
@@ -106,9 +106,9 @@ assemble n tiles decided
                   getMatchingTransform neigh = listToMaybe . map (\i -> neigh {image = i}) . filter ((== bord) . getBord) . transformations n $ image neigh
                   matchingNeighs             = mapMaybe getMatchingTransform neighs
 
-normalizeCoords :: M.Map (Int,Int) a -> M.Map (Int,Int) a
-normalizeCoords mapping = M.mapKeys (\(y,x) -> (y - y0, x - x0)) mapping
-    where (y0,x0) = fst $ M.findMin mapping
+normalizeCoords :: M.Map Coord a -> M.Map Coord a
+normalizeCoords mapping = M.mapKeys (.- min) mapping
+    where min = fst $ M.findMin mapping
 
 removeBorders :: Int -> TileMap -> ImageData
 removeBorders n tiles = M.unions . M.elems . M.mapWithKey translate $ withoutBorders
@@ -127,24 +127,22 @@ findTransform img = head . filter hasMonster $ transformations n img
 --                   # 
 -- #    ##    ##    ###
 --  #  #  #  #  #  #   
-monsterCoords :: [(Int,Int)]
+monsterCoords :: [Coord]
 monsterCoords = [(0,0), (1,1), (1,4), (0,5), (0,6), (1,7), (1,10), (0,11), (0,12), (1,13), (1,16), (0,17), (-1,18), (0,18), (0,19)]
 
 hasMonster :: ImageData -> Bool
 hasMonster img = or . M.elems . M.mapWithKey (\k _ -> hasMonsterHere k img) $ img
 
-hasMonsterHere :: (Int,Int) -> ImageData -> Bool
-hasMonsterHere (y,x) img = all (isHash . addCoord) monsterCoords
-    where addCoord (y1,x1) = (y + y1, x + x1)
-          isHash pos       = (M.findWithDefault 0 pos img) == 1
+hasMonsterHere :: Coord -> ImageData -> Bool
+hasMonsterHere pos img = all (isHash . (pos .+)) monsterCoords
+    where isHash pos = (M.findWithDefault 0 pos img) == 1
 
 removeMonsters :: ImageData -> ImageData
 removeMonsters img = M.foldrWithKey foldF img img
     where foldF k _ acc = if hasMonsterHere k acc then removeMonster k acc else acc
 
-removeMonster :: (Int,Int) -> ImageData -> ImageData
-removeMonster (y,x) img = foldl (\m pos -> M.delete (addCoord pos) m) img monsterCoords
-    where addCoord (y1,x1) = (y + y1, x + x1)
+removeMonster :: Coord -> ImageData -> ImageData
+removeMonster pos img = foldl (\m pos' -> M.delete (pos .+ pos') m) img monsterCoords
 
 -- Parse
 

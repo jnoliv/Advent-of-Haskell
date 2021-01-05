@@ -14,6 +14,7 @@ library
 
   exposed-modules:
     AdventAPI
+    Advent.Coord.Grid
     Advent.Life
     Advent.Math
     Advent.Megaparsec

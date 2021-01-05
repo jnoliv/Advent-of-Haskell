@@ -39,15 +39,15 @@ cabal build all
 If you prefer to simply build a single executable, you can do so
 
 ```
-cabal build day##
+cabal build aoc%%%%day##
 ```
 
-where `##` is the day number, left padded with zeroes to two digits.
+where `%%%%` is the year and `##` is the day number, left padded with zeroes to two digits.
 
 To run the solution to a given day, just do
 
 ```
-cabal run day##
+cabal run aoc%%%%day##
 ```
 
 Note that you can omit the build steps and simply do `cabal run`, as it will build whatever necessary to run the requested executables.

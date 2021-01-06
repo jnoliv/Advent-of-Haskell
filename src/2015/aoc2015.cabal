@@ -30,3 +30,8 @@ executable day03
   import:            day
   main-is:           day03.hs
   build-depends:     containers
+
+executable day04
+  import:            day
+  main-is:           day04.hs
+  build-depends:     bytestring, cryptohash-md5

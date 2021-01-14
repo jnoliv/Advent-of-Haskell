@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost, OverloadedStrings, BlockArguments #-}
+{-# LANGUAGE ImportQualifiedPost, OverloadedStrings, BlockArguments, TupleSections #-}
 
 import AdventAPI (readInputDefaults)
 import Advent.Megaparsec

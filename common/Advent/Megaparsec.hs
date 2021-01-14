@@ -5,7 +5,7 @@ module Advent.Megaparsec (
     ($>),                                                                           -- Data.Functor
     try, sepBy, endBy, many, optional, some, oneOf, noneOf, manyTill, lookAhead,    -- Text.Megaparsec
     char, string, letterChar, alphaNumChar, hexDigitChar,                           -- Text.Megaparsec.Char
-    decimal                                                                         -- Text.Megaparsec.Char.Lexer
+    decimal, signed                                                                 -- Text.Megaparsec.Char.Lexer
 ) where
 
 import AdventAPI (readInputDefaults)
@@ -14,7 +14,7 @@ import Data.Functor (($>))
 import Data.Void (Void)
 import Text.Megaparsec (Parsec, parse, eof, try, lookAhead, sepBy, endBy, many, manyTill, optional, some, oneOf, noneOf)
 import Text.Megaparsec.Char (char, string, letterChar, alphaNumChar, hexDigitChar)
-import Text.Megaparsec.Char.Lexer (decimal)
+import Text.Megaparsec.Char.Lexer (decimal, signed)
 import Text.Megaparsec.Error (errorBundlePretty)
 
 type Parser a = Parsec Void String a

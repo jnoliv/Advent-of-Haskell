@@ -1,5 +1,5 @@
 module Advent.Megaparsec (
-    Parser, readParsedLines, parseLines, parseWrapper,
+    Parser, readParsedLines, parseLines, parseWrapper, sdecimal,
 
     (<|>),                                                                          -- Control.Applicative
     ($>),                                                                           -- Data.Functor
@@ -39,3 +39,8 @@ parseWrapper parser input =
     case parse parser "" input of
         Left e  -> error $ "\n" ++ errorBundlePretty e
         Right r -> r
+
+-- | Read a signed decimal without any whitespace between
+-- the sign and the number
+sdecimal :: Num a => Parser a
+sdecimal = signed (return ()) decimal

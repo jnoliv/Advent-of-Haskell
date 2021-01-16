@@ -16,7 +16,7 @@ format = array <|> object <|> string <|> number
         array  = Array  <$> ("[" *> format `sepBy` "," <* "]")
         object = Object <$> ("{" *> ((,) <$> quotedStr <* ":" <*> format) `sepBy` "," <* "}")
         string = String <$> quotedStr
-        number = Number <$> signed (return ()) decimal
+        number = Number <$> sdecimal
 
         quotedStr = "\"" *> some letterChar <* "\""
 

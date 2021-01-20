@@ -31,6 +31,7 @@ part2 props (k, v) = case find ((== k) . fst) props of
 -- |
 -- >>> :main
 -- 40
+-- 241
 main :: IO ()
 main = do
     aunts <- readParsedLines 2015 16 format

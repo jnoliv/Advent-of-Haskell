@@ -2,7 +2,7 @@
 
 import Advent.Megaparsec
 import Data.Bifunctor (second)
-import Data.Foldable (toList)
+import Data.List (nub)
 import Data.Map (Map)
 import Data.Map qualified as Map
 import Data.Sequence (Seq)
@@ -11,41 +11,59 @@ import Data.Set (Set)
 import Data.Set qualified as Set
 
 type Chemical = String
-type Molecule = [Chemical]
+type Molecule = Seq Chemical
+type ReplMap  = Map Chemical [Molecule]
 
-format :: Parser ([(Chemical, Molecule)], Molecule)
+format :: Parser ([(Chemical, [Chemical])], [Chemical])
 format = (,) <$> (replacement `endBy` "\n") <* "\n"
              <*> some chemical
     where
-        replacement = (,) <$> some letterChar <* " => " <*> some chemical
-        chemical    = try ((\c1 c2 -> [c1,c2]) <$> upperChar <*> lowerChar)
-                      <|>  return              <$> upperChar
+        replacement = (,) <$> chemical <* " => " <*> some chemical
+        chemical    = try ((\a b -> [a,b]) <$> upperChar <*> lowerChar)
+                      <|>  return          <$> letterChar
 
-calibrate :: Map Chemical [Molecule] -> Seq Chemical -> Set Molecule
-calibrate repls formula = go Seq.empty formula Set.empty
+calibrate :: ReplMap -> Molecule -> Set Molecule
+calibrate repls medicine = go Seq.empty medicine Set.empty
     where
-        go :: Seq Chemical -> Seq Chemical -> Set Molecule -> Set Molecule
-        go prev (chem Seq.:<| after) set = go (prev Seq.:|> chem) after $ foldr Set.insert set molecules
-            where molecules = [makeMol prev chem' after | chem' <- Map.findWithDefault [] chem repls]
-        go _    _                    set = set
+        go :: Molecule -> Molecule -> Set Molecule -> Set Molecule
+        go prev (chem Seq.:<| after) set =
+            go (prev Seq.:|> chem) after $ foldr Set.insert set molecules
+            where
+                molecules = [prev Seq.>< mol Seq.>< after | mol <- Map.findWithDefault [] chem repls]
+        go _ _ set = set
 
-        makeMol :: Seq Chemical -> Molecule -> Seq Chemical -> Molecule
-        makeMol prev mol after = toList (prev Seq.>< molSeq Seq.>< after)
-            where molSeq = Seq.fromList mol
+fabricate :: ReplMap -> [Chemical] -> Molecule -> Molecule -> Maybe Int
+fabricate repls terminals medicine start = go (Set.singleton start) 0
+    where
+        size      = Seq.length medicine
+        goalTerms = map (\c -> count (== c) medicine) terminals
+
+        eligible :: Molecule -> Bool
+        eligible mol = Seq.length mol <= size && and (zipWith (<=) nTerms goalTerms)
+            where nTerms = map (\c -> count (== c) mol) terminals
+
+        count :: (a -> Bool) -> Seq a -> Int
+        count cond = Seq.length . Seq.filter cond
+
+        go :: Set Molecule -> Int -> Maybe Int
+        go set steps
+            | Set.null set              = Nothing
+            | medicine `Set.member` set = Just steps
+            | otherwise                 = go newMols (steps + 1)
+            where
+                newMols      = Set.filter eligible . Set.unions . map (calibrate repls) . Set.toList $ set
 
 -- |
 -- >>> :main
 -- 576
 main :: IO ()
 main = do
-    (repls', formula') <- readParsed 2015 19 format
+    (repls', medicine') <- readParsed 2015 19 format
 
-    let repls   = Map.fromListWith (++) $ map (second return) repls'
-        formula = Seq.fromList formula'
+    let repls     = Map.fromListWith (++) $ map (second (return . Seq.fromList)) repls'
+        medicine  = Seq.fromList medicine'
 
-    print . Set.size $ calibrate repls formula
+        terminals = filter (`Map.notMember` repls) . nub $ medicine'
 
-    --print repls
-    --print formula
-
-    --print $ calibrate repls formula
+    print . Set.size $ calibrate repls medicine
+    print            $ fabricate repls terminals medicine (Seq.singleton "e")

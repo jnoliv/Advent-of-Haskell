@@ -9,7 +9,7 @@ This repository contains Haskell programs to solve Advent of Code puzzles. It is
 | 2018 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2017 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2016 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
-| 2015 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | ⭐ |    |    |    |    |    |    |
+| 2015 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | ⭐ | 🌟 |    |    |    |    |    |
 
 ## Setup
 
@@ -23,7 +23,6 @@ ghcup set ghc 8.10.3
 
 ghcup install cabal 3.2.0.0
 ghcup set cabal 3.2.0.0
-
 ```
 
 For any extra information on `ghcup`, you can check its [gitlab page](https://gitlab.haskell.org/haskell/ghcup-hs#usage).

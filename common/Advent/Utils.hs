@@ -1,8 +1,9 @@
 {-# Language BlockArguments #-}
 
 module Advent.Utils (
-    count, xor,
-    sinsert, replace, findSumPair,
+    xor,
+    findSumPair,
+    count, sinsert, replace, combinations,
     readBin, showBin,
     readAsMap, showMap, readAsSet
 ) where
@@ -10,33 +11,15 @@ module Advent.Utils (
 import Control.Monad (guard)
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
-import Data.List (intercalate)
+import Data.List (intercalate, tails)
 import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Numeric (readInt, showIntAtBase)
 
--- | Count occurences in the given list that satisfy 'cond'
-count :: (a -> Bool) -> [a] -> Int
-count cond = length . filter cond
-
 -- | Boolean exclusive OR
 xor :: Bool -> Bool -> Bool
 xor = (/=)
-
--- | Sorted list insertion
-sinsert :: Ord a => a -> [a] -> [a]
-sinsert x [] = [x]
-sinsert x (y:ys)
-    | x >  y = y : sinsert x ys 
-    | x <= y = x : y : ys 
-
--- | Replace all occurrences of 'cur' by 'new' in the list
-replace :: Eq a => a -> a -> [a] -> [a]
-replace _ _ [] = []
-replace cur new (e:es)
-    | e == cur  = new : replace cur new es
-    | otherwise = e   : replace cur new es
 
 -- | Finds a pair in the given list that sums to the given number.
 -- Uses the two pointer technique to do so, which is probably not the
@@ -58,6 +41,33 @@ findSumPair' sum l r list
         right = list !! r
         curSum = left + right
 
+---- List operations
+
+-- | Count occurences in the given list that satisfy 'cond'
+count :: (a -> Bool) -> [a] -> Int
+count cond = length . filter cond
+
+-- | Sorted list insertion
+sinsert :: Ord a => a -> [a] -> [a]
+sinsert x [] = [x]
+sinsert x (y:ys)
+    | x >  y = y : sinsert x ys 
+    | x <= y = x : y : ys 
+
+-- | Replace all occurrences of 'cur' by 'new' in the list
+replace :: Eq a => a -> a -> [a] -> [a]
+replace _ _ [] = []
+replace cur new (e:es)
+    | e == cur  = new : replace cur new es
+    | otherwise = e   : replace cur new es
+
+-- | Return all combinations of size 'n' of the given list
+combinations :: Int -> [a] -> [[a]]
+combinations 0 _  = [[]]
+combinations _ [] = []
+combinations n l
+    | n > length l = []
+    | otherwise    = [x : c | (x : xs) <- tails l, c <- combinations (n - 1) xs]
 
 ---- Parsing and printing
 

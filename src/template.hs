@@ -23,6 +23,7 @@ import Data.Set qualified as Set
 main :: IO ()
 main = do
     -- input <- readInputDefaults YEAR DAY
+    -- input <- readParsed YEAR DAY format
     -- input <- readParsedLines YEAR DAY format
 
     print "TODO"

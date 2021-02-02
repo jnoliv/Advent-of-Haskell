@@ -102,7 +102,7 @@ executable day18
 executable day19
   import:            day
   main-is:           day19.hs
-  build-depends:     containers
+  build-depends:     unordered-containers
 
 executable day20
   import:            day

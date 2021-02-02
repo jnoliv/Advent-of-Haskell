@@ -9,7 +9,7 @@ This repository contains Haskell programs to solve Advent of Code puzzles. It is
 | 2018 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2017 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2016 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
-| 2015 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | ⭐ | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | ⭐ |
+| 2015 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |
 
 ## Setup
 
@@ -62,6 +62,7 @@ cabal test
 ## To do
 Extra things to do apart from completing missing puzzles:
 
+* Go through 2015 for potential improvements
 * Improvements on 2020:
   * Day 07: would Data.Graph work?
   * Day 14: it looks bad, can it be improved?

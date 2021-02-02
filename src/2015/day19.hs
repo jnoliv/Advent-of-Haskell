@@ -1,69 +1,64 @@
 {-# LANGUAGE ImportQualifiedPost, OverloadedStrings #-}
 
 import Advent.Megaparsec
-import Data.Bifunctor (second)
-import Data.List (nub)
-import Data.Map (Map)
-import Data.Map qualified as Map
-import Data.Sequence (Seq)
-import Data.Sequence qualified as Seq
-import Data.Set (Set)
-import Data.Set qualified as Set
+import Data.List (isPrefixOf, nub, sortOn)
+import Data.Maybe (fromJust, mapMaybe, listToMaybe)
+import Data.HashSet qualified as Set
 
-type Chemical = String
-type Molecule = Seq Chemical
-type ReplMap  = Map Chemical [Molecule]
-
-format :: Parser ([(Chemical, [Chemical])], [Chemical])
+format :: Parser ([(String, String)], String)
 format = (,) <$> (replacement `endBy` "\n") <* "\n"
-             <*> some chemical
+             <*> chemical
     where
-        replacement = (,) <$> chemical <* " => " <*> some chemical
-        chemical    = try ((\a b -> [a,b]) <$> upperChar <*> lowerChar)
-                      <|>  return          <$> letterChar
+        chemical    = some letterChar
+        replacement = (,) <$> chemical <* " => "
+                          <*> chemical
 
-calibrate :: ReplMap -> Molecule -> Set Molecule
-calibrate repls medicine = go Seq.empty medicine Set.empty
+-- | The list of all strings resulting from replacing once each
+-- occurence of 'pat' with 'rep' in 'src'
+--
+-- >>> replacements "aa" "bbb" "cdefaaghikalaaa"
+-- ["cdefaaghikalabbb","cdefaaghikalbbba","cdefbbbghikalaaa"]
+--
+-- >>> nub $ concatMap (replacements "bbb" "aa") ["cdefaaghikalabbb","cdefaaghikalbbba","cdefbbbghikalaaa"]
+-- ["cdefaaghikalaaa"]
+replacements :: String -> String -> String -> [String]
+replacements pat rep src = f [] src []
     where
-        go :: Molecule -> Molecule -> Set Molecule -> Set Molecule
-        go prev (chem Seq.:<| after) set =
-            go (prev Seq.:|> chem) after $ foldr Set.insert set molecules
+        n = length pat
+
+        f _   []   acc = acc
+        f pre rest acc = f (pre ++ [head rest]) (tail rest)
+            (if pat `isPrefixOf` rest then (pre ++ rep ++ (drop n rest)) : acc else acc)
+
+calibrate :: [(String, String)] -> String -> Int
+calibrate repls src = Set.size . Set.fromList $ concat [replacements pat rep src | (pat, rep) <- repls]
+
+-- | Calculate the number of replacements that need to be applied to go
+-- from 'start' to 'end', using the replacements in 'repls'. This is a
+-- greedy algorithm, longer replacements are tried first and there's no
+-- guarantee that the result will be the minimum number of steps.
+--
+-- >>> fabricationSteps [("e","ee")] "e" "eeeeeeeeeee"
+-- 10
+fabricationSteps :: [(String, String)] -> String -> String -> Int
+fabricationSteps repls start end = fromJust $ f 0 end
+    where
+        nub'   = Set.toList . Set.fromList
+        replsO = reverse $ sortOn (length . snd) repls
+
+        f steps cur
+            | cur == start    = Just steps
+            | otherwise       = listToMaybe $ mapMaybe (f (steps + 1)) reductions
             where
-                molecules = [prev Seq.>< mol Seq.>< after | mol <- Map.findWithDefault [] chem repls]
-        go _ _ set = set
-
-fabricate :: ReplMap -> [Chemical] -> Molecule -> Molecule -> Maybe Int
-fabricate repls terminals medicine start = go (Set.singleton start) 0
-    where
-        size      = Seq.length medicine
-        goalTerms = map (\c -> count (== c) medicine) terminals
-
-        eligible :: Molecule -> Bool
-        eligible mol = Seq.length mol <= size && and (zipWith (<=) nTerms goalTerms)
-            where nTerms = map (\c -> count (== c) mol) terminals
-
-        count :: (a -> Bool) -> Seq a -> Int
-        count cond = Seq.length . Seq.filter cond
-
-        go :: Set Molecule -> Int -> Maybe Int
-        go set steps
-            | Set.null set              = Nothing
-            | medicine `Set.member` set = Just steps
-            | otherwise                 = go newMols (steps + 1)
-            where
-                newMols      = Set.filter eligible . Set.unions . map (calibrate repls) . Set.toList $ set
+                reductions = nub' $ concat [replacements pat rep cur | (rep, pat) <- replsO]
 
 -- |
 -- >>> :main
 -- 576
+-- 207
 main :: IO ()
 main = do
-    (repls', medicine') <- readParsed 2015 19 format
+    (repls, medicine) <- readParsed 2015 19 format
 
-    let repls     = Map.fromListWith (++) $ map (second (return . Seq.fromList)) repls'
-        medicine  = Seq.fromList medicine'
-
-        terminals = filter (`Map.notMember` repls) . nub $ medicine'
-
-    print . Set.size $ calibrate repls medicine
-    print            $ fabricate repls terminals medicine (Seq.singleton "e")
+    print $ calibrate repls medicine
+    print $ fabricationSteps repls "e" medicine

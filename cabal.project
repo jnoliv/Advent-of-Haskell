@@ -9,4 +9,5 @@ packages:
 	common/advent.cabal
 
 	src/2020/aoc2020.cabal
+	src/2016/aoc2016.cabal
 	src/2015/aoc2015.cabal

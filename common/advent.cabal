@@ -28,4 +28,5 @@ library
     text,
     bytestring,
     containers,
-    megaparsec
+    megaparsec,
+    cryptohash-md5

@@ -1,21 +1,25 @@
-{-# Language BlockArguments #-}
+{-# Language ImportQualifiedPost, BlockArguments #-}
 
 module Advent.Utils (
     xor,
     findSumPair,
+    md5,
     count, sinsert, replace, combinations,
     readBin, showBin,
     readAsMap, showMap, readAsSet
 ) where
 
 import Control.Monad (guard)
+import Crypto.Hash.MD5 qualified as MD5
+import Data.ByteString qualified as BS
+import Data.ByteString.Char8 qualified as BSC
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
 import Data.List (intercalate, tails)
 import Data.Maybe (catMaybes)
-import qualified Data.Map as Map
-import qualified Data.Set as Set
-import Numeric (readInt, showIntAtBase)
+import Data.Map qualified as Map
+import Data.Set qualified as Set
+import Numeric (readInt, showIntAtBase, showHex)
 
 -- | Boolean exclusive OR
 xor :: Bool -> Bool -> Bool
@@ -40,6 +44,12 @@ findSumPair' sum l r list
         left  = list !! l
         right = list !! r
         curSum = left + right
+
+md5 :: String -> String
+md5 = toHex . MD5.hash . BSC.pack
+    where
+        toHex   = pad 32 . concatMap (pad 2 . flip showHex "") . BS.unpack
+        pad l s = replicate (l - length s) '0' ++ s
 
 ---- List operations
 

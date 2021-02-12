@@ -6,7 +6,7 @@ module Advent.Utils (
     md5,
     count, sinsert, replace, combinations,
     readBin, showBin,
-    readAsMap, showMap, readAsSet
+    readAsMap, showMap, readAsSet, showSet
 ) where
 
 import Control.Monad (guard)
@@ -17,7 +17,9 @@ import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
 import Data.List (intercalate, tails)
 import Data.Maybe (catMaybes)
+import Data.Map (Map)
 import Data.Map qualified as Map
+import Data.Set (Set)
 import Data.Set qualified as Set
 import Numeric (readInt, showIntAtBase, showHex)
 
@@ -95,7 +97,7 @@ indexGrid2D = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
 -- | Read the ASCII input to a map. Receives a function to convert
 -- from char to the map value, wrapped in Maybe to allow ommiting
 -- positions from the resulting map.
-readAsMap :: (Char -> Maybe a) -> String -> Map.Map (Int, Int) a
+readAsMap :: (Char -> Maybe a) -> String -> Map (Int, Int) a
 readAsMap f input = Map.fromList do
     (r, line)  <- zip [0..] (lines input)
     (c, char)  <- zip [0..] line
@@ -104,7 +106,7 @@ readAsMap f input = Map.fromList do
 
 -- | Show a rectangular map using 'f' to convert elements to
 -- characters and 'def' as the default value in the map
-showMap :: (a -> Char) -> a -> Map.Map (Int, Int) a -> String
+showMap :: (a -> Char) -> a -> Map (Int, Int) a -> String
 showMap f def m = intercalate "\n" $ map (map (f . findWithDefault)) indexes
     where (y0,x0) = fst $ Map.findMin m
           (y1,x1) = fst $ Map.findMax m
@@ -116,9 +118,16 @@ showMap f def m = intercalate "\n" $ map (map (f . findWithDefault)) indexes
 -- | Read the ASCII input to a set. Receives a function to define
 -- which characters should be included in the set (or their positions,
 -- rather).
-readAsSet :: (Char -> Bool) -> String -> Set.Set (Int,Int)
+readAsSet :: (Char -> Bool) -> String -> Set (Int,Int)
 readAsSet f input = Set.fromList do
     (r, line) <- zip [0..] (lines input)
     (c, char) <- zip [0..] line
     guard (f char)
     return (r,c)
+
+-- | Show a rectangular set using 'f' to convert membership to characters
+showSet :: (Bool -> Char) -> Set (Int, Int) -> String
+showSet f s = intercalate "\n" [[f $ Set.member (r,c) s | c <- [c0 .. c1]] | r <- [r0 .. r1] ]
+    where
+        (r0,c0) = Set.findMin s
+        (r1,c1) = Set.findMax s

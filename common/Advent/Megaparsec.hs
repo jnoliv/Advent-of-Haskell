@@ -1,19 +1,21 @@
 module Advent.Megaparsec (
     Parser, readParsed, readParsedLines, parseLines, parseWrapper, sdecimal,
 
-    (<|>),                                                                          -- Control.Applicative
-    ($>),                                                                           -- Data.Functor
-    try, sepBy, endBy, many, optional, some, oneOf, noneOf, manyTill, lookAhead,    -- Text.Megaparsec
-    char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar,     -- Text.Megaparsec.Char
-    decimal, signed                                                                 -- Text.Megaparsec.Char.Lexer
+    (<|>),                                                                                      -- Control.Applicative
+    replicateM,                                                                                 -- Control.Monad
+    ($>),                                                                                       -- Data.Functor
+    try, sepBy, endBy, many, optional, some, oneOf, noneOf, manyTill, lookAhead,                -- Text.Megaparsec
+    char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar,      -- Text.Megaparsec.Char
+    decimal, signed                                                                             -- Text.Megaparsec.Char.Lexer
 ) where
 
 import AdventAPI (readInputDefaults)
 import Control.Applicative ((<|>))
+import Control.Monad (replicateM)
 import Data.Functor (($>))
 import Data.Void (Void)
 import Text.Megaparsec (Parsec, parse, eof, try, lookAhead, sepBy, endBy, many, manyTill, optional, some, oneOf, noneOf)
-import Text.Megaparsec.Char (char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar)
+import Text.Megaparsec.Char (char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar)
 import Text.Megaparsec.Char.Lexer (decimal, signed)
 import Text.Megaparsec.Error (errorBundlePretty)
 

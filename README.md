@@ -8,7 +8,7 @@ This repository contains Haskell programs to solve Advent of Code puzzles. It is
 | 2019 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2018 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2017 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
-| 2016 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
+| 2016 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2015 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |
 
 ## Setup
@@ -63,6 +63,8 @@ cabal test
 Extra things to do apart from completing missing puzzles:
 
 * Go through 2015 for potential improvements
+* Improvements on 2016:
+  * Day 09: can the call to `parseWrapper` be removed from inside the parser? 
 * Improvements on 2020:
   * Day 07: would Data.Graph work?
   * Day 14: it looks bad, can it be improved?

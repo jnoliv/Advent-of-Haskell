@@ -1,10 +1,10 @@
 cabal-version:       3.0
 build-type:          Simple
 
-name:                aoc
+name:                aoc2021
 version:             0.1.0.0
-synopsis:            Advent of Code Solutions
-description:         Haskell solutions to Advent of Code, check it out at
+synopsis:            Advent of Code 2021 Solutions
+description:         Haskell solutions to Advent of Code 2021, check it out at
                      <https://adventofcode.com>
 
 license:             ISC
@@ -13,10 +13,11 @@ author:              João Nuno Oliveira
 maintainer:          joaonunoao@gmail.com
 copyright:           2021 João Nuno Oliveira
 homepage:            https://github.com/jnoliv/Advent-of-Haskell
-extra-source-files:  README.md
 
-test-suite doctests
-  type:              exitcode-stdio-1.0
-  ghc-options:       -threaded
-  main-is:           doctests.hs
-  build-depends:     base, directory, filepath, doctest >= 0.8
+common day
+  default-language:  Haskell2010
+  build-depends:     base, advent
+
+executable day01
+  import:            day
+  main-is:           day01.hs

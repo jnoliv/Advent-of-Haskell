@@ -6,7 +6,7 @@ import System.FilePath.Posix (FilePath, (</>), isExtensionOf)
 import Test.DocTest (doctest)
 
 srcDirs :: [FilePath]
-srcDirs = sort ["src/2015", "src/2020"]
+srcDirs = sort ["src/2015", "src/2016", "src/2020", "src/2021"]
 
 relativeSrc :: FilePath -> [FilePath] -> [FilePath]
 relativeSrc dir = sort . map (dir </>) . filter (".hs" `isExtensionOf`)

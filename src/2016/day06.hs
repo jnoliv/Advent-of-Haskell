@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.List (transpose, sort, sortOn, group)
 
 correct :: ([String] -> String) -> [String] -> String

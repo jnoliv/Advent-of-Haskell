@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost, OverloadedStrings, BlockArguments #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.Char (ord, chr)
 
 -- |

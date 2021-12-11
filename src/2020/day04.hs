@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Advent.Utils (count)
 import Data.Char (isDigit)
 import Data.List.Split (splitOn)

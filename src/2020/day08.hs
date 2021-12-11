@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Data.Maybe (maybe)
 import qualified Data.IntSet    as Set
 import qualified Data.Vector as Vector

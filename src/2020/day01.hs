@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API (readInputDefaults)
 import Advent.Utils (findSumPair)
 import Data.List (sort)
 
@@ -20,7 +20,7 @@ findTriplet sum (x:xs) =
 -- 116115990
 main :: IO()
 main = do
-    contents <- AdventAPI.readInputDefaults 2020 1
+    contents <- readInputDefaults 2020 1
     let expenses = sort . map read . lines $ contents
 
     case findSumPair 2020 expenses of

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Coord.Grid (Coord, (.+), (.*), up, right, down)
 import Advent.Megaparsec (letterChar, decimal, many, Parser, readParsedLines)
 

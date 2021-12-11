@@ -1,6 +1,6 @@
 {-# Language OverloadedStrings #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Megaparsec
 import Data.Bifunctor (first)
 import Data.List (delete, transpose, isPrefixOf, sortOn)

@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import qualified Data.Set as Set
 import Data.List.Split (splitOn)
 

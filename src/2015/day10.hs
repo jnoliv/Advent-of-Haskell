@@ -1,20 +1,20 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 
 -- |
 -- >>> rle "1"
--- 11
+-- "11"
 --
 -- >>> rle "11"
--- 21
+-- "21"
 --
 -- >>> rle "21"
--- 1211
+-- "1211"
 --
 -- >>> rle "1211"
--- 111221
+-- "111221"
 --
 -- >>> rle "111221"
---111221
+-- "312211"
 rle :: String -> String
 rle str = go (head str) 0 str
     where

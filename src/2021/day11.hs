@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Coord.Grid (Coord, neighbours8)
 import Advent.Utils (readAsMap, showMap)
 import Data.Char (digitToInt, intToDigit)

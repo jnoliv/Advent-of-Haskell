@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.List (sort)
 
 data ParseError2 = Unexpected Char | Incomplete String

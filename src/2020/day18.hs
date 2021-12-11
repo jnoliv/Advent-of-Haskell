@@ -1,6 +1,6 @@
 {-# Language OverloadedStrings #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Megaparsec
 
 data ExpTree = Exp ExpTree Char ExpTree | Term Integer

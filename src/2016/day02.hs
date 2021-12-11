@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Coord.Grid
 import Advent.Utils (readAsMap)
 import Data.Maybe (fromJust)

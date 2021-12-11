@@ -1,6 +1,6 @@
 {-# Language BlockArguments #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.Char (digitToInt, intToDigit)
 import Data.List (elemIndex, notElem)
 import Data.Maybe (fromJust)

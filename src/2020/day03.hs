@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API (readInputDefaults)
 import Advent.Utils (readAsSet)
 import qualified Data.Set as Set
 
@@ -25,7 +25,7 @@ hasTree (_, nCols, trees) (x,y) = Set.member (x,y') trees
 -- 3521829480
 main :: IO()
 main = do
-    trees <- parseInput <$> AdventAPI.readInputDefaults 2020 3
+    trees <- parseInput <$> readInputDefaults 2020 3
 
     let slopes   = [(1,1), (3,1), (5,1), (7,1), (1,2)]
         hitTrees = map (countTrees trees) slopes

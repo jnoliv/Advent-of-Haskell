@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Utils (md5)
 import Data.List (isPrefixOf)
 

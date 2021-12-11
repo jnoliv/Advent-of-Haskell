@@ -1,6 +1,6 @@
 {-# Language OverloadedStrings #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Megaparsec
 import Advent.Utils (count)
 import Control.Monad.State

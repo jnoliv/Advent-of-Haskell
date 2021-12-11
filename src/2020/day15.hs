@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import qualified Data.IntMap as M
 import Data.List.Split (splitOn)
 

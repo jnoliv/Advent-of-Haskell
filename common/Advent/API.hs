@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module AdventAPI (readInput, readInputDefaults) where
+module Advent.API (readInput, readInputDefaults) where
 
 import Network.HTTP.Req
     ( (/:),

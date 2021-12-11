@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Advent.Coord.Grid
 import Advent.Utils (readAsSet, count)
 import Data.Maybe (mapMaybe)

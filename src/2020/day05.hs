@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Advent.Utils (readBin)
 import Data.List (sort)
 

@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost, OverloadedStrings, BlockArguments, TupleSections #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Megaparsec
 import Advent.Coord.Grid
 import Advent.Life

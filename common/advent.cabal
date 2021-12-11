@@ -13,7 +13,7 @@ library
   default-language:    Haskell2010
 
   exposed-modules:
-    AdventAPI
+    Advent.API
     Advent.Coord.Grid
     Advent.Life
     Advent.Math

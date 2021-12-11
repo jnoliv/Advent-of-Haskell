@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 
 toNum :: String -> [Int]
 toNum = map (\c -> if c == '(' then 1 else -1)

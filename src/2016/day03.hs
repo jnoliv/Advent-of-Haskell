@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.List (permutations, transpose)
 import Data.List.Split (chunksOf)
 

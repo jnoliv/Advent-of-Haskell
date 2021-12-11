@@ -9,7 +9,7 @@ module Advent.Megaparsec (
     decimal, signed                                                                               -- Text.Megaparsec.Char.Lexer
 ) where
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Control.Applicative ((<|>))
 import Control.Monad (replicateM)
 import Data.Functor (($>))

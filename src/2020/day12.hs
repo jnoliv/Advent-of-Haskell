@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Coord.Grid
 import Data.Bifunctor (first, second)
 

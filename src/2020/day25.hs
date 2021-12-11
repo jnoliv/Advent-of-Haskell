@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Data.Bifunctor (bimap)
 import Data.List (iterate')
 

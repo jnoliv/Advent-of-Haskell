@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Life
 import Advent.Utils (readAsSet)
 import Data.List (delete)

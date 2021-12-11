@@ -1,4 +1,4 @@
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Math (chineseRemainder)
 import Data.Maybe (fromJust)
 import Data.List.Split (splitOn)

@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Data.Maybe (fromJust)
 import Data.List.Split (chunksOf)
 import qualified Data.Map as Map

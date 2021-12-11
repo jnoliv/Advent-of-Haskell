@@ -1,4 +1,4 @@
-import AdventAPI
+import Advent.API
 import Advent.Utils (sinsert, findSumPair)
 import Data.List (sort, delete)
 import qualified Data.Vector as V

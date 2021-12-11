@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Utils (md5)
 import Data.Function (on)
 import Data.List (isPrefixOf, nubBy, sort)

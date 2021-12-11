@@ -1,6 +1,6 @@
 {-# Language OverloadedStrings #-}
 
-import AdventAPI (readInputDefaults)
+import Advent.API (readInputDefaults)
 import Advent.Coord.Grid
 import Advent.Utils (readAsMap, readBin, showBin, count)
 import Data.Char (intToDigit)

@@ -4,7 +4,7 @@ module Advent.Utils (
     xor,
     findSumPair,
     md5,
-    count, sinsert, replace, combinations,
+    count, sinsert, replace, replaceString, combinations,
     readBin, showBin,
     readAsMap, showMap, readAsSet, showSet
 ) where
@@ -73,6 +73,17 @@ replace _ _ [] = []
 replace cur new (e:es)
     | e == cur  = new : replace cur new es
     | otherwise = e   : replace cur new es
+
+-- | Replace all occurrences of 'old' by 'new' in the string.
+-- This is terribly inefficient, but doesn't matter much.
+replaceString :: String -> String -> String -> String
+replaceString  _    _   ""   = ""
+replaceString old new string
+    | s == old  = new ++ replaceString old new (drop n string)
+    | otherwise = head string : replaceString old new (tail string)
+    where
+        n = length old
+        s = take n string
 
 -- | Return all combinations of size 'n' of the given list
 combinations :: Int -> [a] -> [[a]]

@@ -19,9 +19,9 @@ main :: IO ()
 main = do
     input <- readInputDefaults 2021 11
 
-    let octopuses  = readAsMap (Just . digitToInt) input
-        steps      = iterate step (octopuses, 0)
-        count      = Map.size octopuses
+    let octopi = readAsMap (Just . digitToInt) input
+        steps  = iterate step (octopi, 0)
+        count  = Map.size octopi
 
     print . sum . map snd $ take 101 steps
     print . fromJust $ findIndex ((== count) . snd) steps

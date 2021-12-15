@@ -2,7 +2,7 @@ module Advent.Coord.Grid (
     Coord, (.+), (.-), (.*), (*.),
     up, right, down, left,
     turnLeft, turnRight, turnAround,
-    manhattan, neighbours4, neighbours8
+    distance, manhattan, neighbours4, neighbours8
 ) where
 
 import Data.Bifunctor (bimap)
@@ -42,6 +42,10 @@ turnLeft, turnRight, turnAround :: Coord -> Coord
 turnLeft   (r,c) = (-c,  r)
 turnRight  (r,c) = ( c, -r)
 turnAround (r,c) = (-r, -c)
+
+-- | Distance without diagonal movement
+distance :: Coord -> Coord -> Int
+distance p = manhattan . (.-) p
 
 -- | Manhattan distance to origin
 manhattan :: Coord -> Int

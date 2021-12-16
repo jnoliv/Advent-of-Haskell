@@ -4,7 +4,7 @@ This repository contains Haskell programs to solve Advent of Code puzzles. It is
 
 |      | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 |  12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
 |------|----|----|----|----|----|----|----|----|----|----|----|-----|----|----|----|----|----|----|----|----|----|----|----|----|----|
-| 2021 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |    |    |    |    |    |    |    |    |    |    |
+| 2021 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |    |    |    |    |    |    |    |    |    |
 | 2020 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 | 🌟 |
 | 2019 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2018 |    |    |    |    |    |    |    |    |    |    |    |     |    |    |    |    |    |    |    |    |    |    |    |    |    |
@@ -80,5 +80,6 @@ Extra things to do apart from completing missing puzzles:
   * Day 19: ReadP
   * Day 25: better dicrete logarithm than brute force?
 * Improvements on 2021
-  * Day 15: refactor the expansion of the input into a function
   * Utils: refactor the distance and manhattan utilities
+  * Day 15: refactor (and fix) the expansion of the input into a function, abstract A* into the Grid library
+  * Day 16: can this be cleaned up?

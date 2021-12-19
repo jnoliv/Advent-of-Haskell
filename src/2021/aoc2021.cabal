@@ -98,3 +98,8 @@ executable day17
 executable day18
   import:            day
   main-is:           day18.hs
+
+executable day19
+  import:            day
+  main-is:           day19.hs
+  build-depends:     containers

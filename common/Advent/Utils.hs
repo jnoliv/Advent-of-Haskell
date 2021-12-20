@@ -136,6 +136,6 @@ readAsSet f input = Set.fromList do
 
 -- | Show a rectangular set using 'f' to convert membership to characters
 showSet :: (Bool -> Char) -> Set Coord -> String
-showSet f s = intercalate "\n" [[f $ Set.member (r,c) s | c <- [c0 .. c1]] | r <- [r0 .. r1] ]
+showSet f s = intercalate "\n" [[f $ Set.member (r,c) s | c <- [c0 .. c1]] | r <- [r0 .. r1] ] ++ "\n"
     where
         ((r0,c0), (r1,c1)) = findDefininingPoints . Set.toList $ s

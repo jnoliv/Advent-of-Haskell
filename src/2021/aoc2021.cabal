@@ -113,3 +113,8 @@ executable day21
   import:            day
   main-is:           day21.hs
   build-depends:     containers, array
+
+executable day22
+  import:            day
+  main-is:           day22.hs
+  build-depends:     containers

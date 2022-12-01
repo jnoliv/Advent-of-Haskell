@@ -1,0 +1,23 @@
+cabal-version:       3.0
+build-type:          Simple
+
+name:                aoc2022
+version:             0.1.0.0
+synopsis:            Advent of Code 2022 Solutions
+description:         Haskell solutions to Advent of Code 2022, check it out at
+                     <https://adventofcode.com>
+
+license:             ISC
+license-file:        LICENSE
+author:              João Nuno Oliveira
+maintainer:          joaonunoao@gmail.com
+copyright:           2022 João Nuno Oliveira
+homepage:            https://github.com/jnoliv/Advent-of-Haskell
+
+common day
+  default-language:  Haskell2010
+  build-depends:     base, advent
+
+executable day01
+  import:            day
+  main-is:           day01.hs

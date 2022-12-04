@@ -12,6 +12,8 @@ import Data.Char
 import Data.List
 import Data.Maybe
 
+import Data.List.Split
+
 import Data.Map (Map)
 import Data.Map qualified as Map
 import Data.Set (Set)

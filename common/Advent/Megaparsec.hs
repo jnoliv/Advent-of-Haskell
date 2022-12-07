@@ -1,12 +1,12 @@
 module Advent.Megaparsec (
     Parser, readParsed, readParsedLines, parseLines, parseWrapper, sdecimal,
 
-    (<|>),                                                                                        -- Control.Applicative
-    replicateM,                                                                                   -- Control.Monad
-    ($>),                                                                                         -- Data.Functor
-    try, sepBy, sepBy1, endBy, endBy1, many, optional, some, oneOf, noneOf, manyTill, lookAhead,  -- Text.Megaparsec
-    char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar,        -- Text.Megaparsec.Char
-    decimal, signed                                                                               -- Text.Megaparsec.Char.Lexer
+    (<|>),                                                                                             -- Control.Applicative
+    replicateM,                                                                                        -- Control.Monad
+    ($>),                                                                                              -- Data.Functor
+    eof, try, sepBy, sepBy1, endBy, endBy1, many, optional, some, oneOf, noneOf, manyTill, lookAhead,  -- Text.Megaparsec
+    char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar,             -- Text.Megaparsec.Char
+    decimal, signed                                                                                    -- Text.Megaparsec.Char.Lexer
 ) where
 
 import Advent.API (readInputDefaults)

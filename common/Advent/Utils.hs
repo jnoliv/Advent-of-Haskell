@@ -6,7 +6,7 @@ module Advent.Utils (
     md5,
     count, sinsert, replace, combinations,
     readBin, showBin,
-    readAsMap, showMap, readAsSet, showSet
+    readAsMap, mapDimensions, showMap, readAsSet, showSet
 ) where
 
 import Advent.Coord.Grid (Coord, (.+))
@@ -101,6 +101,12 @@ readAsMap f input = Map.fromList do
     (c, char)  <- zip [0..] line
     Just value <- [f char]
     return ((r,c), value)
+
+-- | 
+mapDimensions :: Map Coord a -> (Int,Int)
+mapDimensions m = (x1 - x0 + 1, y1 - y0 + 1) 
+    where
+        ((y0,x0), (y1,x1)) = findDefininingPoints . map fst $ Map.toList m
 
 -- | Show a rectangular map using 'f' to convert elements to
 -- characters and 'def' as the default value in the map

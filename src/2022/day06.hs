@@ -7,8 +7,7 @@ findStart n packet i =
         then i + n
         else findStart n (tail packet) (i + 1)
     where
-        chars   = take n packet
-        combs   = combinations 2 chars
+        combs = combinations 2 (take n packet)
 
         areDiff [a,b] = a /= b
 

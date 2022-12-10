@@ -1,10 +1,11 @@
-import Advent.Megaparsec
+import Advent.Megaparsec(Parser, readParsedLines, many, letterChar)
+import Advent.Utils (intersects)
 import Data.Char (isLower, isUpper, ord)
 import Data.List (intersect)
 import Data.List.Split (chunksOf)
 
 splitInHalf :: String -> (String, String)
-splitInHalf s = (take l s, drop l s)
+splitInHalf s = splitAt l s
     where l = length s `div` 2
 
 -- | Returns an item type's priority, where
@@ -15,15 +16,8 @@ splitInHalf s = (take l s, drop l s)
 -- [1,26,27,52]
 priority :: Char -> Int
 priority c
-    | isLower c = ord c - 96
-    | isUpper c = ord c - 38 -- (-65 + 27)
-
--- | Intersects 3 lists given as a 3 element list of lists.
---
--- >>> intersect3 ["vJrwpWtwJgWrhcsFMMfFFhFp", "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "PmmdzqPrVvPwwTWBwg"]
--- "rr"
-intersect3 :: Eq a => [[a]] -> [a]
-intersect3 [a, b, c] = intersect a (intersect b c)
+    | isLower c = ord c - ord 'a' + 1
+    | isUpper c = ord c - ord 'A' + 27
 
 -- |
 -- >>> :main
@@ -37,7 +31,7 @@ main = do
         priorities          = map (priority . head . uncurry intersect) itemsPerCompartment
 
         groups              = chunksOf 3 input
-        groupPriorities     = map (priority . head . intersect3) groups
+        groupPriorities     = map (priority . head . intersects) groups
 
     print $ sum priorities
     print $ sum groupPriorities

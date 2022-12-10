@@ -1,12 +1,19 @@
 module Advent.Megaparsec (
-    Parser, readParsed, readParsedLines, parseLines, parseWrapper, sdecimal,
+    Parser,
+    readParsed, readParsedLines, parseLines, parseWrapper,
+    sdecimal, trim,
 
-    (<|>),                                                                                             -- Control.Applicative
-    replicateM,                                                                                        -- Control.Monad
-    ($>),                                                                                              -- Data.Functor
-    eof, try, sepBy, sepBy1, endBy, endBy1, many, optional, some, oneOf, noneOf, manyTill, lookAhead,  -- Text.Megaparsec
-    char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar,             -- Text.Megaparsec.Char
-    decimal, signed                                                                                    -- Text.Megaparsec.Char.Lexer
+    (<|>),                                              -- Control.Applicative
+    replicateM,                                         -- Control.Monad
+    ($>),                                               -- Data.Functor
+
+    eof, try, sepBy, sepBy1, endBy, endBy1, optional,   -- Text.Megaparsec
+    many, some, manyTill, oneOf, noneOf, lookAhead,     -- Text.Megaparsec
+
+    char, letterChar, alphaNumChar, hexDigitChar,       -- Text.Megaparsec.Char
+    lowerChar, upperChar, asciiChar,                    -- Text.Megaparsec.Char
+
+    decimal                                             -- Text.Megaparsec.Char.Lexer
 ) where
 
 import Advent.API (readInputDefaults)
@@ -14,7 +21,7 @@ import Control.Applicative ((<|>))
 import Control.Monad (replicateM)
 import Data.Functor (($>))
 import Data.Void (Void)
-import Text.Megaparsec (Parsec, parse, eof, try, lookAhead, sepBy, endBy, many, manyTill, optional, some, oneOf, noneOf, notFollowedBy, sepBy1, endBy1)
+import Text.Megaparsec
 import Text.Megaparsec.Char (char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar)
 import Text.Megaparsec.Char.Lexer (decimal, signed)
 import Text.Megaparsec.Error (errorBundlePretty)
@@ -50,3 +57,8 @@ parseWrapper parser input =
 -- the sign and the number
 sdecimal :: Num a => Parser a
 sdecimal = signed (return ()) decimal
+
+-- | Trim allows a (imo) more intuitive representation than between.
+-- Note that trim prefix p suffix == between prefix suffix p
+trim :: Parser pre -> Parser p -> Parser suf -> Parser p
+trim prefix p suffix = between prefix suffix p

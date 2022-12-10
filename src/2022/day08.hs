@@ -1,75 +1,55 @@
-{-# LANGUAGE ImportQualifiedPost, OverloadedStrings, BlockArguments, TupleSections #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 
 import Advent.API (readInputDefaults)
-import Advent.Megaparsec
-import Advent.Coord.Grid
-import Advent.Life
-import Advent.Math
-import Advent.Utils
-
-import Data.Bifunctor
-import Data.Char
-import Data.List
-import Data.Maybe
+import Advent.Coord.Grid (Coord, up, right, down, left)
+import Advent.Utils (readAsMap, mapDimensions)
+import Data.Char (digitToInt)
+import Data.Maybe (fromJust)
 
 import Data.Map (Map)
 import Data.Map qualified as Map
 
-countVisible :: Map Coord Int -> Int
-countVisible m = borders + nVisible
+type Forest = Map Coord Int
+
+countVisible :: Forest -> Int
+countVisible m = (Map.size borders) + (Map.size internalVisible)
     where
-        s@(nCols, nRows) = mapDimensions m
-        borders          = nCols * nRows - (nCols - 1) * (nRows - 1)
-        inside (y,x) _   = 0 < y && y < nCols && 0 < x && x < nRows
-        internal         = Map.filterWithKey inside m
-        nVisible         = Map.size . Map.filter id . Map.mapWithKey (visible m s) $ internal
+        mapSize@(nCols, nRows) = mapDimensions m
+        inside (y,x) _         = (0 < y && y < nCols) && (0 < x && x < nRows)
+        (internal, borders)    = Map.partitionWithKey inside m
+        internalVisible        = Map.filterWithKey (visible m mapSize) internal
 
-
-visible :: Map Coord Int -> (Int, Int) -> Coord -> Int -> Bool
-visible m (maxY, maxX) coord height =
-    all (< height) allLeft || all (< height) allUp || all (< height) allRight || all (< height) allDown
+visible :: Forest -> (Int, Int) -> Coord -> Int -> Bool
+visible m mapSize coord maxHeight = any (all (< maxHeight)) heightsPerDirection
     where
-        outOfBounds :: Coord -> Bool
-        outOfBounds (y,x) = y < 0 || maxY <= y || x < 0 || maxX <= x
+        treesPerDirection   = map (\d -> treesInDirection mapSize d coord) [left, up, right, down]
+        heightsPerDirection = (map.map) (height m) treesPerDirection
 
-        allInDirection :: (Coord -> Coord) -> Coord -> [Coord]
-        allInDirection d = takeWhile (not . outOfBounds) . tail . iterate d
+treesInDirection :: (Int, Int) -> (Coord -> Coord) -> Coord -> [Coord]
+treesInDirection (nCols, nRows) d = takeWhile inside . tail . iterate d
+    where inside (y,x) = (0 <= y && y < nCols) && (0 <= x && x < nRows)
 
-        getHeight :: [Coord] -> [Int]
-        getHeight = map (fromJust . (flip Map.lookup m))
+height :: Forest -> Coord -> Int
+height m = fromJust . (flip Map.lookup m)
 
-        allLeft  = getHeight $ allInDirection left  coord
-        allUp    = getHeight $ allInDirection up    coord
-        allRight = getHeight $ allInDirection right coord
-        allDown  = getHeight $ allInDirection down  coord
-
-maxScenic :: Map Coord Int -> Int
+maxScenic :: Forest -> Int
 maxScenic m = maximum . map snd $ Map.toList scenicScores
     where
-        s@(nCols, nRows) = mapDimensions m
-        scenicScores     = Map.mapWithKey (scenic m s) m
+        mapSize      = mapDimensions m
+        scenicScores = Map.mapWithKey (scenic m mapSize) m
 
-scenic :: Map Coord Int -> (Int, Int) -> Coord -> Int -> Int
-scenic m (maxY, maxX) coord height = allLeft * allUp * allRight * allDown
+scenic :: Forest -> (Int, Int) -> Coord -> Int -> Int
+scenic m mapSize coord maxHeight = product visiblePerDirection
     where
-        outOfBounds :: Coord -> Bool
-        outOfBounds (y,x) = y < 0 || maxY <= y || x < 0 || maxX <= x
-
-        getHeight :: [Coord] -> [Int]
-        getHeight = map (fromJust . (flip Map.lookup m))
-
-        allInDirection :: (Coord -> Coord) -> Coord -> [Coord]
-        allInDirection d = takeWhile (not . outOfBounds) . tail . iterate d
-
-        allLeft  = length . takeWhileInclusive (< height) . getHeight $ allInDirection left  coord
-        allUp    = length . takeWhileInclusive (< height) . getHeight $ allInDirection up    coord
-        allRight = length . takeWhileInclusive (< height) . getHeight $ allInDirection right coord
-        allDown  = length . takeWhileInclusive (< height) . getHeight $ allInDirection down  coord
+        treesPerDirection   = map (\d -> treesInDirection mapSize d coord) [left, up, right, down]
+        heightsPerDirection = (map.map) (height m) treesPerDirection
+        visiblePerDirection = map (length . takeWhileInclusive (< maxHeight)) heightsPerDirection
 
 takeWhileInclusive :: (a -> Bool) -> [a] -> [a]
-takeWhileInclusive _ [] = []
-takeWhileInclusive p (x:xs) = x : if p x then takeWhileInclusive p xs
-                                         else []
+takeWhileInclusive _ []     = []
+takeWhileInclusive p (x:xs)
+    | p x       = x : takeWhileInclusive p xs
+    | otherwise = [x]
 
 -- |
 -- >>> :main

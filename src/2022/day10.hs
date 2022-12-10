@@ -7,15 +7,9 @@ import Advent.Life
 import Advent.Math
 import Advent.Utils
 
-import Data.Bifunctor
-import Data.Char
-import Data.List
-import Data.Maybe
-
-import Data.List.Split
+import Data.List.Split (chunksOf)
 
 data Inst = Noop | Addx Integer
-    deriving Show
 
 format :: Parser Inst
 format = (Noop <$ "noop")

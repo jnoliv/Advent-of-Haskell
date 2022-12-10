@@ -1,5 +1,5 @@
 module Advent.Coord.Grid (
-    Coord, (.+), (.-), (.*), (*.),
+    Coord, row, col, origin, (.+), (.-), (.*), (*.),
     up, right, down, left,
     turnLeft, turnRight, turnAround,
     distance, manhattan, neighbours4, neighbours8
@@ -13,6 +13,10 @@ type Coord = (Int,Int) -- (row, col)
 row, col :: Coord -> Int
 row = fst
 col = snd
+
+-- | Origin
+origin :: Coord
+origin = (0,0)
 
 -- | Vector addition
 (.+) :: Coord -> Coord -> Coord

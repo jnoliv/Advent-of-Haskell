@@ -1,16 +1,15 @@
 {-# LANGUAGE ImportQualifiedPost, OverloadedStrings #-}
 
 import Advent.API (readInputDefaults)
-import Advent.Megaparsec
-import Advent.Coord.Grid
-
-import Data.Bifunctor
+import Advent.Megaparsec (Parser, readParsedLines, decimal, (<|>), ($>))
+import Advent.Coord.Grid (Coord, origin, left, up, right, down, (.+), (.-))
+import Data.Bifunctor (bimap)
 
 import Data.Set (Set)
 import Data.Set qualified as Set
 
 type Move  = (Coord -> Coord, Int)
-type State = (Coord, [Coord], Set Coord) -- (Head, Tails, Visited by tail)
+type State = ([Coord], Set Coord)
 
 format :: Parser (Coord -> Coord, Int)
 format = (,) <$> dir <* " " <*> decimal
@@ -23,19 +22,13 @@ format = (,) <$> dir <* " " <*> decimal
 move :: Move -> State -> State
 move (dir, n) = head . drop n . iterate (moveTails . moveHead dir)
 
-moveHead :: (Coord -> Coord) -> (Coord, a, b) -> (Coord, a, b)
-moveHead dir (head, tail, visited) = (dir head, tail, visited)
+moveHead :: (Coord -> Coord) -> ([Coord], Set Coord) -> ([Coord], Set Coord)
+moveHead dir (head : tail, visited) = (dir head : tail, visited)
 
 moveTails :: State -> State
-moveTails s@(head, tails, visited) = (head, tails', Set.insert (last tails') visited)
+moveTails (knots, visited) = (knots', Set.insert (last knots') visited)
     where
-        tails' = moveTails' [] (head, tails)
-
-        moveTails' :: [Coord] -> (Coord, [Coord]) -> [Coord]
-        moveTails' newTails (_, []) = reverse newTails
-        moveTails' newTails (head, (tail : tails)) = moveTails' (tail' : newTails) (tail', tails)
-            where
-                tail' = moveTail head tail
+        knots' = scanl1 moveTail knots
 
 moveTail :: Coord -> Coord -> Coord
 moveTail head tail =
@@ -54,10 +47,8 @@ main :: IO ()
 main = do
     moves <- readParsedLines 2022 9 format
 
-    let afterMovement  = foldl (flip move)  ((0,0), [(0,0)], Set.empty) moves
+    let afterMovement  = foldl (flip move) (take  2 $ repeat origin, Set.empty) moves
+        afterMovement2 = foldl (flip move) (take 10 $ repeat origin, Set.empty) moves
 
-        tails          = take 9 $ repeat (0,0)
-        afterMovement2 = foldl (flip move) ((0,0), tails, Set.empty) moves
-
-    print . Set.size. (\(_, _, s) -> s) $ afterMovement
-    print . Set.size. (\(_, _, s) -> s) $ afterMovement2
+    print . Set.size . snd $ afterMovement
+    print . Set.size . snd $ afterMovement2

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Advent.Megaparsec
 import Advent.Utils (xor, count)
 
@@ -6,7 +8,7 @@ type PasswordData = ((Int, Int), Char, String)
 passwordFormat :: Parser PasswordData
 passwordFormat = 
     (,,) <$> ((,) <$> decimal <* char '-' <*> decimal <* char ' ')
-         <*> letterChar <* string ": "
+         <*> letterChar <* ": "
          <*> many letterChar
 
 -- | Check if 'pass' has a count of characters 'c' between 'l' and 'r'

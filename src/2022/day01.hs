@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Advent.API (readInputDefaults)
-import Advent.Megaparsec
-import Advent.Utils
-import Data.List
+import Advent.Megaparsec (Parser, readParsed, decimal, sepBy, endBy)
+import Advent.Utils (sortDesc)
+import Data.List (sortBy)
 
 format :: Parser [[Integer]]
 format = group `sepBy` "\n"
@@ -17,8 +16,7 @@ main :: IO ()
 main = do
     caloriesPerElf <- readParsed 2022 1 format
 
-    let totalPerElf       = map sum caloriesPerElf
-        sortedTotalPerElf = sortBy (flip compare) totalPerElf
+    let totalPerElf       = sortDesc $ map sum caloriesPerElf
 
-    print $ head sortedTotalPerElf
-    print $ sum . take 3 $ sortedTotalPerElf
+    print . head         $ totalPerElf
+    print . sum . take 3 $ totalPerElf

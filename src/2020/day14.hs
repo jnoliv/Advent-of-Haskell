@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Advent.Megaparsec
 import Advent.Utils (replace, readBin, showBin)
 import Data.Bits ((.&.), (.|.))
@@ -10,8 +12,8 @@ data Inst = Mask  String    -- Mask Bitmask
     deriving (Show)
 
 program :: Parser Inst
-program = Mask <$> (string "mask = " *> many alphaNumChar)
-     <|> Write <$> (string "mem[" *> decimal) <*> (string "] = " *> decimal)
+program = Mask <$> ("mask = " *> many alphaNumChar)
+     <|> Write <$> ("mem[" *> decimal) <*> ("] = " *> decimal)
 
 -- | Convert the bitmask to a bitwise-and mask and a bitwise-or mask that
 -- when applied in succession, result in the same as the described mask

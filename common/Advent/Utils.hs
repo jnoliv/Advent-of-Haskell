@@ -4,7 +4,7 @@ module Advent.Utils (
     xor,
     findSumPair,
     md5,
-    count, sinsert, replace, combinations,
+    count, sortDesc, sinsert, replace, combinations, intersects,
     readBin, showBin,
     readAsMap, mapDimensions, showMap, readAsSet, showSet
 ) where
@@ -16,7 +16,7 @@ import Data.ByteString qualified as BS
 import Data.ByteString.Char8 qualified as BSC
 import Data.Char (digitToInt, intToDigit)
 import Data.Function (on)
-import Data.List (intercalate, tails)
+import Data.List (intercalate, tails, intersect, sortBy)
 import Data.Maybe (catMaybes)
 import Data.Map (Map)
 import Data.Map qualified as Map
@@ -56,25 +56,29 @@ md5 = toHex . MD5.hash . BSC.pack
 
 ---- List operations
 
--- | Count occurences in the given list that satisfy 'cond'
+-- | Count occurences in the given list that satisfy 'cond'.
 count :: (a -> Bool) -> [a] -> Int
 count cond = length . filter cond
 
--- | Sorted list insertion
+-- | Sort list from bigger to smaller.
+sortDesc :: Ord a => [a] -> [a]
+sortDesc = sortBy (flip compare)
+
+-- | Sorted list insertion.
 sinsert :: Ord a => a -> [a] -> [a]
 sinsert x [] = [x]
 sinsert x (y:ys)
     | x >  y = y : sinsert x ys 
     | x <= y = x : y : ys 
 
--- | Replace all occurrences of 'cur' by 'new' in the list
+-- | Replace all occurrences of 'cur' by 'new' in the list.
 replace :: Eq a => a -> a -> [a] -> [a]
 replace _ _ [] = []
 replace cur new (e:es)
     | e == cur  = new : replace cur new es
     | otherwise = e   : replace cur new es
 
--- | Return all combinations of size 'n' of the given list
+-- | Return all combinations of size 'n' of the given list.
 combinations :: Int -> [a] -> [[a]]
 combinations 0 _  = [[]]
 combinations _ [] = []
@@ -82,13 +86,17 @@ combinations n l
     | n > length l = []
     | otherwise    = [x : c | (x : xs) <- tails l, c <- combinations (n - 1) xs]
 
+-- | Returns the intersection of all given lists.
+intersects :: Eq a => [[a]] -> [a]
+intersects = foldl1 intersect
+
 ---- Parsing and printing
 
--- | Read a binary number
+-- | Read a binary number.
 readBin :: String -> Int
 readBin = fst . head . readInt 2 (`elem` "01") digitToInt
 
--- | Show a number in binary
+-- | Show a number in binary.
 showBin :: Int -> String
 showBin n = showIntAtBase 2 intToDigit n ""
 
@@ -102,14 +110,15 @@ readAsMap f input = Map.fromList do
     Just value <- [f char]
     return ((r,c), value)
 
--- | 
+-- | Returns the 2D dimensions of a map of points, i.e., the length
+-- and width of the smallest rectangle encompassing every point.
 mapDimensions :: Map Coord a -> (Int,Int)
 mapDimensions m = (x1 - x0 + 1, y1 - y0 + 1) 
     where
         ((y0,x0), (y1,x1)) = findDefininingPoints . map fst $ Map.toList m
 
 -- | Show a rectangular map using 'f' to convert elements to
--- characters and 'def' as the default value in the map
+-- characters and 'def' as the default value in the map.
 showMap :: (a -> Char) -> a -> Map Coord a -> String
 showMap f def m = intercalate "\n" $ map (map (f . findWithDefault)) indexes'
     where
@@ -140,7 +149,7 @@ readAsSet f input = Set.fromList do
     guard (f char)
     return (r,c)
 
--- | Show a rectangular set using 'f' to convert membership to characters
+-- | Show a rectangular set using 'f' to convert membership to characters.
 showSet :: (Bool -> Char) -> Set Coord -> String
 showSet f s = intercalate "\n" [[f $ Set.member (r,c) s | c <- [c0 .. c1]] | r <- [r0 .. r1] ] ++ "\n"
     where

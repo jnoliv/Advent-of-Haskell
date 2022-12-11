@@ -1,10 +1,11 @@
 {-# LANGUAGE ImportQualifiedPost, OverloadedStrings #-}
 
-import Advent.Megaparsec
-import Data.Bits
+import Advent.Megaparsec (Parser, readParsedLines, try, (<|>), many, letterChar, decimal)
+import Data.Bits ((.|.), (.&.), shiftL, shiftR)
+import Data.Maybe (fromJust)
+
 import Data.Map (Map)
 import Data.Map qualified as Map
-import Data.Maybe (fromJust)
 
 data Wire  = Wire String | Signal Int
 data Instr = In  Wire

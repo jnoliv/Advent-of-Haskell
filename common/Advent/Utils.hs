@@ -6,7 +6,8 @@ module Advent.Utils (
     md5,
     count, sortDesc, sinsert, replace, combinations, intersects,
     readBin, showBin,
-    readAsMap, mapDimensions, showMap, readAsSet, showSet
+    readAsMap, mapDimensions, showMap, readAsSet, showSet,
+    findDefininingPoints,
 ) where
 
 import Advent.Coord.Grid (Coord, (.+))

@@ -2,7 +2,7 @@
 
 import Advent.API (readInputDefaults)
 import Advent.Coord.Grid (Coord, up, right, down, left)
-import Advent.Utils (readAsMap, mapDimensions)
+import Advent.Utils (takeUntil, readAsMap, mapDimensions)
 import Data.Char (digitToInt)
 import Data.Maybe (fromJust)
 
@@ -43,13 +43,7 @@ scenic m mapSize coord maxHeight = product visiblePerDirection
     where
         treesPerDirection   = map (\d -> treesInDirection mapSize d coord) [left, up, right, down]
         heightsPerDirection = (map.map) (height m) treesPerDirection
-        visiblePerDirection = map (length . takeWhileInclusive (< maxHeight)) heightsPerDirection
-
-takeWhileInclusive :: (a -> Bool) -> [a] -> [a]
-takeWhileInclusive _ []     = []
-takeWhileInclusive p (x:xs)
-    | p x       = x : takeWhileInclusive p xs
-    | otherwise = [x]
+        visiblePerDirection = map (length . takeUntil (< maxHeight)) heightsPerDirection
 
 -- |
 -- >>> :main

@@ -4,7 +4,7 @@ module Advent.Utils (
     xor,
     findSumPair,
     md5,
-    count, sortDesc, sinsert, replace, combinations, intersects,
+    count, takeUntil, sortDesc, sinsert, replace, combinations, intersects,
     readBin, showBin,
     readAsMap, mapDimensions, showMap, readAsSet, showSet,
     findDefininingPoints,
@@ -60,6 +60,13 @@ md5 = toHex . MD5.hash . BSC.pack
 -- | Count occurences in the given list that satisfy 'cond'.
 count :: (a -> Bool) -> [a] -> Int
 count cond = length . filter cond
+
+-- | Similar to takeWhile but includes the first element which fails the predicate.
+takeUntil :: (a -> Bool) -> [a] -> [a]
+takeUntil _ []     = []
+takeUntil p (x:xs)
+    | p x       = x : takeUntil p xs
+    | otherwise = [x]
 
 -- | Sort list from bigger to smaller.
 sortDesc :: Ord a => [a] -> [a]
@@ -136,6 +143,7 @@ indexGrid2D = map (`zip` [0..]) . fmap (cycle . return) $ [0..]
 -- | Finds the top left and bottom right points that define the
 -- smallest rectangle containing all the points in the list.
 findDefininingPoints :: [Coord] -> (Coord, Coord)
+findDefininingPoints []     = ((0,0),(0,0))
 findDefininingPoints (p:ps) = foldl f (p,p) ps
     where
         f ((y0,x0), (y1,x1)) (y,x) = ((min y0 y, min x0 x), (max y1 y, max x1 x))

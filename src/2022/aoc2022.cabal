@@ -81,3 +81,57 @@ executable day14
   import:            day
   main-is:           day14.hs
   build-depends:     containers
+
+executable day15
+  import:            day
+  main-is:           day15.hs
+  build-depends:     containers
+
+executable day16
+  import:            day
+  main-is:           day16.hs
+  build-depends:     containers
+
+executable day17
+  import:            day
+  main-is:           day17.hs
+  build-depends:     containers
+
+executable day18
+  import:            day
+  main-is:           day18.hs
+  build-depends:     containers
+
+executable day19
+  import:            day
+  main-is:           day19.hs
+
+executable day20
+  import:            day
+  main-is:           day20.hs
+  build-depends:     ilist
+
+executable day21
+  import:            day
+  main-is:           day21.hs
+  build-depends:     containers
+
+executable day22
+  import:            day
+  main-is:           day22.hs
+  build-depends:     containers
+
+executable day23
+  import:            day
+  main-is:           day23.hs
+  build-depends:     containers
+
+executable day24
+  import:            day
+  main-is:           day24.hs
+  build-depends:     containers
+
+executable day25
+  import:            day
+  main-is:           day25.hs
+  

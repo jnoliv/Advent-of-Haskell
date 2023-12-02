@@ -22,3 +22,8 @@ executable day01
   import:            day
   main-is:           day01.hs
   build-depends:     text
+
+executable day02
+  import:            day
+  main-is:           day02.hs
+  build-depends:     split, containers

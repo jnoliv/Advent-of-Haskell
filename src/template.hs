@@ -7,8 +7,10 @@ import Advent.Life
 import Advent.Math
 import Advent.Utils
 
+import Control.Lens
 import Data.Bifunctor
 import Data.Char
+import Data.Function
 import Data.List
 import Data.Maybe
 

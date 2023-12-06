@@ -10,8 +10,8 @@ module Advent.Megaparsec (
     eof, try, sepBy, sepBy1, endBy, endBy1, optional,   -- Text.Megaparsec
     many, some, manyTill, oneOf, noneOf, lookAhead,     -- Text.Megaparsec
 
-    char, letterChar, alphaNumChar, hexDigitChar,       -- Text.Megaparsec.Char
-    lowerChar, upperChar, asciiChar,                    -- Text.Megaparsec.Char
+    char, letterChar, alphaNumChar, digitChar,          -- Text.Megaparsec.Char
+    hexDigitChar, lowerChar, upperChar, asciiChar,      -- Text.Megaparsec.Char
 
     decimal                                             -- Text.Megaparsec.Char.Lexer
 ) where
@@ -22,7 +22,7 @@ import Control.Monad (replicateM)
 import Data.Functor (($>))
 import Data.Void (Void)
 import Text.Megaparsec
-import Text.Megaparsec.Char (char, string, letterChar, alphaNumChar, hexDigitChar, lowerChar, upperChar, asciiChar)
+import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer (decimal, signed)
 import Text.Megaparsec.Error (errorBundlePretty)
 

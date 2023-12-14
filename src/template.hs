@@ -7,6 +7,7 @@ import Advent.Life
 import Advent.Math
 import Advent.Utils
 
+import Control.Applicative
 import Control.Lens
 import Data.Bifunctor
 import Data.Bool
@@ -15,7 +16,7 @@ import Data.Function
 import Data.List
 import Data.Maybe
 
-import Data.List.Index
+--import Data.List.Index
 import Data.List.Split
 
 import Data.Map (Map)

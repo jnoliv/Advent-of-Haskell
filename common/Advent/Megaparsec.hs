@@ -12,7 +12,7 @@ module Advent.Megaparsec (
 
     char, letterChar, alphaNumChar, digitChar,          -- Text.Megaparsec.Char
     hexDigitChar, lowerChar, upperChar, asciiChar,      -- Text.Megaparsec.Char
-    punctuationChar,                                    -- Text.Megaparsec.Char
+    punctuationChar, symbolChar,                        -- Text.Megaparsec.Char
 
     decimal                                             -- Text.Megaparsec.Char.Lexer
 ) where

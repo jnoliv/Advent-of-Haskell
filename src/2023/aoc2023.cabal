@@ -118,3 +118,8 @@ executable day21
   import:            day
   main-is:           day21.hs
   build-depends:     containers, regression-simple
+
+executable day22
+  import:            day
+  main-is:           day22.hs
+  build-depends:     containers

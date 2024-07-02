@@ -1,0 +1,31 @@
+cabal-version:       3.0
+name:                advent2
+version:             2.0.0
+synopsis:            Utilities library for Advent of Code solutions
+license:             ISC
+author:              João Nuno Oliveira
+maintainer:          joaonunoao@gmail.com
+copyright:           2020 João Nuno Oliveira
+homepage:            https://github.com/jnoliv/Advent-of-Haskell
+build-type:          Simple
+
+library
+  default-language:    Haskell2010
+
+  default-extensions:
+    BlockArguments,
+    ImportQualifiedPost,
+    OverloadedStrings,
+    TupleSections
+
+  exposed-modules:
+    Advent.IO
+  
+  build-depends:
+    base,
+    bytestring,
+    directory,
+    filepath,
+    megaparsec,
+    req,
+    text

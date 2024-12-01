@@ -8,6 +8,7 @@ packages:
     aoc.cabal
     common/advent.cabal
 
+    src/2024/aoc2024.cabal
     src/2023/aoc2023.cabal
     src/2022/aoc2022.cabal
     src/2021/aoc2021.cabal

@@ -6,7 +6,7 @@ module Advent.Utils (
     md5,
     count, takeUntil, sortDesc, sinsert, replace, combinations, intersects,
     readBin, showBin,
-    readAsMap, mapDimensions, showMap, readAsSet, showSet,
+    readAsMap, mapDimensions, inside, showMap, readAsSet, showSet,
     findDefininingPoints,
 ) where
 
@@ -124,6 +124,14 @@ mapDimensions :: Map Coord a -> (Int,Int)
 mapDimensions m = (x1 - x0 + 1, y1 - y0 + 1) 
     where
         ((y0,x0), (y1,x1)) = findDefininingPoints . map fst $ Map.toList m
+
+-- | Returns True if the given point is inside the map's
+-- boundaries, and returns False otherwise.
+inside :: Map Coord a -> Coord -> Bool
+inside m (y,x) = 0 <= y && y < ly
+              && 0 <= x && x < lx
+    where
+        (ly,lx) = mapDimensions m
 
 -- | Show a rectangular map using 'f' to convert elements to
 -- characters and 'def' as the default value in the map.

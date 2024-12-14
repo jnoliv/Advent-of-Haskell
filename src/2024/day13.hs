@@ -5,7 +5,6 @@ import Advent.Coord.Grid (Coord)
 import Advent.Megaparsec (decimal, oneOf, Parser, readParsed, sepBy)
 import Data.Bifunctor (bimap)
 import Data.Maybe (catMaybes)
-import Control.Monad
 import Z3.Monad
 
 type Machine  = (Coord, Coord, Coord)
@@ -15,7 +14,7 @@ parser :: Parser [Machine]
 parser = machine `sepBy` "\n"
     where
         machine = (,,) <$> button <*> button <*> prize
-        button  = (,)  <$> ("Button " *> oneOf ['A', 'B'] *> ": " *> 
+        button  = (,)  <$> ("Button " *> oneOf ['A', 'B'] *> ": " *>
                             "X+" *> decimal <* ", ")
                        <*> ("Y+" *> decimal <* "\n")
         prize   = (,)  <$> ("Prize: " *>
@@ -30,12 +29,12 @@ getSolutions a b = go []
                Nothing      -> return acc
                Just s@[a',b'] -> do restrictSolution s
                                     go ((a',b') : acc)
-                              
+
         restrictSolution [sA,sB] =
           assert =<< mkNot =<< mkOr =<< sequence [
             mkEq a =<< mkIntNum sA,
             mkEq b =<< mkIntNum sB]
-        
+
         getSolution = fmap snd $ withModel $ \m ->
           catMaybes <$> mapM (evalInt m) [a,b]
 
@@ -62,11 +61,11 @@ script ((xA,yA), (xB,yB), (xP,yP)) = do
     assert =<< mkEq _yP =<< mkAdd =<< sequence [
         mkMul [a, _yA],
         mkMul [b, _yB]]
-    
-    getSolutions a b    
+
+    getSolutions a b
 
 minTokens :: [Machine] -> IO Integer
-minTokens = liftM (sum . map (minimum . map tokens) . filter (not . null)) . mapM (evalZ3 . script)
+minTokens = fmap (sum . map (minimum . map tokens) . filter (not . null)) . mapM (evalZ3 . script)
     where
         tokens (a,b) = 3*a + b
 

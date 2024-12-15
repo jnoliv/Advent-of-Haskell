@@ -1,7 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
-
-{- | This module contains input / output and parsing utilities.
--}
+-- | This module contains input / output and parsing utilities.
 module Advent.IO (
     -- * Reading input
     readInput,
@@ -19,24 +16,9 @@ module Advent.IO (
     module Text.Megaparsec.Char,
     (<|>), ($>), replicateM,
 
-    -- * Sets
-    -- * Maps
-
     -- * Binary
     readBin, showBin,
 ) where
-
-{- $reexports
-
-This module re-exports commonly used combinators from several modules:
-
-* "Control.Applicative"
-* "Control.Monad"
-* "Data.Functor"
-* "Text.Megaparsec"
-* "Text.Megaparsec.Char"
-* "Text.Megaparsec.Char.Lexer"
--}
 
 import Control.Applicative ((<|>), empty)
 import Control.Monad (replicateM)
@@ -75,9 +57,22 @@ import Text.Megaparsec.Char (
     )
 import Text.Megaparsec.Char.Lexer (decimal, signed)
 
+{- $reexports
+This module re-exports commonly used combinators from several modules:
+
+* "Control.Applicative"
+* "Control.Monad"
+* "Data.Functor"
+* "Text.Megaparsec"
+* "Text.Megaparsec.Char"
+* "Text.Megaparsec.Char.Lexer"
+-}
+
 {- | Reads input for the given year and day. If the input file already exists,
 its entire contents are read and returned. Otherwise, the input is fetched
 from the Advent of Code servers and saved to a file.
+
+Requires a session-cookie.txt file to exist containing a valid AoC session cookie.
 
 > readInput 2023 15
 -}
@@ -164,6 +159,16 @@ parseInputLines year day parser =
 -}
 sdecimal :: Num a => Parser a
 sdecimal = signed empty decimal
+
+{- | Parse a list of signed decimals with separator being one of
+space, tab or comma.
+
+==== __Examples__
+>>> parse sdecimals "+7 1,-3\t0"
+[7,1,-3,0]
+-}
+sdecimals :: Num a => Parser [a]
+sdecimals = sdecimal `sepBy` oneOf [' ', '\t', ',']
 
 {- | Identical to between with the last two arguments flipped.
 

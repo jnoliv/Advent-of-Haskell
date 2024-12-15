@@ -2,13 +2,13 @@
 
 import Advent.API (readInputDefaults)
 import Advent.Coord.Grid (Coord)
+import Advent.Math.LinearEquations (solve)
 import Advent.Megaparsec (decimal, oneOf, Parser, readParsed, sepBy)
 import Data.Bifunctor (bimap)
 import Data.Maybe (catMaybes)
-import Z3.Monad
 
 type Machine  = (Coord, Coord, Coord)
-type Solution = (Integer, Integer)
+type Solution = [Integer] --(Integer, Integer)
 
 parser :: Parser [Machine]
 parser = machine `sepBy` "\n"
@@ -21,53 +21,12 @@ parser = machine `sepBy` "\n"
                             "X=" *> decimal <* ", ")
                        <*> ("Y=" *> decimal <* "\n")
 
-getSolutions :: AST -> AST -> Z3 [Solution]
-getSolutions a b = go []
-  where go acc = do
-          maybeSolution <- getSolution
-          case maybeSolution of
-               Nothing      -> return acc
-               Just s@[a',b'] -> do restrictSolution s
-                                    go ((a',b') : acc)
-
-        restrictSolution [sA,sB] =
-          assert =<< mkNot =<< mkOr =<< sequence [
-            mkEq a =<< mkIntNum sA,
-            mkEq b =<< mkIntNum sB]
-
-        getSolution = fmap snd $ withModel $ \m ->
-          catMaybes <$> mapM (evalInt m) [a,b]
-
-script :: Machine -> Z3 [Solution]
-script ((xA,yA), (xB,yB), (xP,yP)) = do
-    -- a * xA + b * xB = xP
-    -- a * yA + b * yB = yP
-
-    a   <- mkFreshIntVar "a"
-    _xA <- mkIntNum xA
-    _yA <- mkIntNum yA
-
-    b   <- mkFreshIntVar "b"
-    _xB <- mkIntNum xB
-    _yB <- mkIntNum yB
-
-    _xP <- mkIntNum xP
-    _yP <- mkIntNum yP
-
-    assert =<< mkEq _xP =<< mkAdd =<< sequence [
-        mkMul [a, _xA],
-        mkMul [b, _xB]]
-
-    assert =<< mkEq _yP =<< mkAdd =<< sequence [
-        mkMul [a, _yA],
-        mkMul [b, _yB]]
-
-    getSolutions a b
-
 minTokens :: [Machine] -> IO Integer
-minTokens = fmap (sum . map (minimum . map tokens) . filter (not . null)) . mapM (evalZ3 . script)
+minTokens = fmap (sum . map tokens . filter (not . null)) . mapM findMoves
     where
-        tokens (a,b) = 3*a + b
+        findMoves ((xA,yA), (xB,yB), (xP,yP)) = solve [[xA,xB],[yA,yB]] [xP,yP]
+
+        tokens [a,b] = 3*a + b
 
 -- |
 -- >>> :main

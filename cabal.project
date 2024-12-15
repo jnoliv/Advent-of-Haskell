@@ -7,6 +7,7 @@ write-ghc-environment-files: always
 packages:
     aoc.cabal
     common/advent.cabal
+    src/Advent/advent.cabal
 
     src/2024/aoc2024.cabal
     src/2023/aoc2023.cabal

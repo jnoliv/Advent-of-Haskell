@@ -15,11 +15,14 @@ library
   default-extensions:
     BlockArguments,
     ImportQualifiedPost,
+    LambdaCase,
     OverloadedStrings,
     TupleSections
 
   exposed-modules:
-    Advent.IO
+    Advent.Data.Trifunctor
+    Advent.IO,
+    Advent.Math.LinearEquations
   
   build-depends:
     base,
@@ -28,4 +31,5 @@ library
     filepath,
     megaparsec,
     req,
-    text
+    text,
+    z3

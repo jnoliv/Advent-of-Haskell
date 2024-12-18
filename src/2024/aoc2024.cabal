@@ -93,6 +93,10 @@ executable day16
   main-is:           day16.hs
   build-depends:     composition, containers
 
+executable day17
+  import:            day
+  main-is:           day17.hs
+
 executable day18
   import:            day
   main-is:           day18.hs

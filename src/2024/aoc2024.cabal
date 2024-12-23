@@ -112,6 +112,11 @@ executable day20
   main-is:           day20.hs
   build-depends:     containers
 
+executable day21
+  import:            day
+  main-is:           day21.hs
+  build-depends:     containers, MemoTrie
+
 executable day22
   import:            day
   main-is:           day22.hs
